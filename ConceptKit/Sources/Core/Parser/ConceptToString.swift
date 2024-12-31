@@ -84,11 +84,11 @@ extension Concept.Vector.Operator {
         case .multiply:
             return "*"
         case .multiplyint:
-            return "*^"
+            return "**"
         case .diffabs:
-            return "-^"
+            return "--"
         case .divideint:
-            return "/^"
+            return "//"
         case .equalTo:
             return "="
         case .notEqualTo:
