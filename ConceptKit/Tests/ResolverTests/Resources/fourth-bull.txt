@@ -1,0 +1,7 @@
+Bull
+------
+Candle.Close Price > Candle.Open Price
+
+Fourth Bull
+------------
+Bull.Index = 3

@@ -1,0 +1,15 @@
+
+Bull
+------------
+Candle.Close Price > Candle.Open Price
+
+Bull Cluster
+----------------------
+First.Bull.Candle.Index - 1 -> !Before.Bull.Candle.Index
+First.Bull.Candle.Index -> Last.Bull.Candle.Index
+Last.Bull.Candle.Index + 1 -> Last.Bull.Candle.Index
+Last.Bull.Candle.Index + 1 -> !After.Bull.Candle.Index
+
+Third Bull Cluster
+------------------
+Bull Cluster.Index = 2

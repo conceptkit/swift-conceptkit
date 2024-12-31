@@ -1,0 +1,9 @@
+
+Test Square
+------
+7 -> Square.Number
+Square.Result = 49
+
+Square
+----------
+Number * Number -> Result

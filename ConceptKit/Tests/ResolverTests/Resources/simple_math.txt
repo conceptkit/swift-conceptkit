@@ -1,0 +1,4 @@
+
+Simple Math
+----------
+Candle.High Price - Candle.Low Price -> Delta Price
