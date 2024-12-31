@@ -1,0 +1,222 @@
+[
+  {
+    "volume": 3933,
+    "open": 0.00020000,
+    "high": 0.00026966,
+    "openTime": 632106000,
+    "closeTime": 632106299.9990001,
+    "low": 0.00026766,
+    "numberOfTrades": 10,
+    "closePrice": 0.0001500,
+  },
+  {
+    "volume": 11063,
+    "open": 0.00030000,
+    "high": 0.00026808,
+    "openTime": 632106300,
+    "closeTime": 632106599.9990001,
+    "low": 0.00026613,
+    "numberOfTrades": 18,
+    "closePrice": 0.00020000
+  },
+  {
+    "volume": 15243,
+    "open": 0.0007000,
+    "high": 0.00026837,
+    "openTime": 632106600,
+    "closeTime": 632106899.9990001,
+    "low": 0.00026614,
+    "numberOfTrades": 20,
+    "closePrice": 0.001400
+  },
+  {
+    "volume": 23355,
+    "open": 0.00026853,
+    "high": 0.00026862,
+    "openTime": 632106900,
+    "closeTime": 632107199.9990001,
+    "low": 0.00026723,
+    "numberOfTrades": 17,
+    "closePrice": 0.00026854
+  },
+  {
+    "volume": 52903,
+    "open": 0.0002675,
+    "high": 0.00026903,
+    "openTime": 632107200,
+    "closeTime": 632107499.9990001,
+    "low": 0.00026746,
+    "numberOfTrades": 32,
+    "closePrice": 0.0002674
+  },
+  {
+    "volume": 52904,
+    "open": 0.00026782,
+    "high": 0.00026838,
+    "openTime": 632107500,
+    "closeTime": 632107799.9990001,
+    "low": 0.00026742,
+    "numberOfTrades": 10,
+    "closePrice": 0.00026781
+  },
+  {
+    "volume": 77777,
+    "open": 0.2,
+    "high": 0.0002693,
+    "openTime": 632107800,
+    "closeTime": 632108099.9990001,
+    "low": 0.00026833,
+    "numberOfTrades": 21,
+    "closePrice": 0.3
+  },
+  {
+    "volume": 7730,
+    "open": 0.3,
+    "high": 0.00026927,
+    "openTime": 632108100,
+    "closeTime": 632108399.9990001,
+    "low": 0.00026873,
+    "numberOfTrades": 10,
+    "closePrice": 0.4
+  },
+  {
+    "volume": 8382,
+    "open": 0.4,
+    "high": 0.00027027,
+    "openTime": 632108400,
+    "closeTime": 632108699.9990001,
+    "low": 0.00026861,
+    "numberOfTrades": 21,
+    "closePrice": 0.5
+  },
+  {
+    "volume": 19930,
+    "open": 0.5,
+    "high": 0.00027048,
+    "openTime": 632108700,
+    "closeTime": 632108999.9990001,
+    "low": 0.00026944,
+    "numberOfTrades": 15,
+    "closePrice": 0.6
+  },
+  {
+    "volume": 20569,
+    "open": 0.6,
+    "high": 0.00027006,
+    "openTime": 632109000,
+    "closeTime": 632109299.9990001,
+    "low": 0.00026873,
+    "numberOfTrades": 15,
+    "closePrice": 0.7
+  },
+  {
+    "volume": 2624,
+    "open": 0.0002692,
+    "high": 0.0002692,
+    "openTime": 632109300,
+    "closeTime": 632109599.9990001,
+    "low": 0.00026804,
+    "numberOfTrades": 9,
+    "closePrice": 0.00026891
+  },
+  {
+    "volume": 2014,
+    "open": 0.00026812,
+    "high": 0.00026822,
+    "openTime": 632109600,
+    "closeTime": 632109899.9990001,
+    "low": 0.000268,
+    "numberOfTrades": 6,
+    "closePrice": 0.000268
+  },
+  {
+    "volume": 1615,
+    "open": 0.00026821,
+    "high": 0.00026821,
+    "openTime": 632109900,
+    "closeTime": 632110199.9990001,
+    "low": 0.00026821,
+    "numberOfTrades": 4,
+    "closePrice": 0.00026821
+  },
+  {
+    "volume": 40531,
+    "open": 0.00026853,
+    "high": 0.00026968,
+    "openTime": 632110200,
+    "closeTime": 632110499.9990001,
+    "low": 0.0002681,
+    "numberOfTrades": 25,
+    "closePrice": 0.00026968
+  },
+  {
+    "volume": 14969,
+    "open": 0.00026905,
+    "high": 0.00026955,
+    "openTime": 632110500,
+    "closeTime": 632110799.9990001,
+    "low": 0.00026831,
+    "numberOfTrades": 19,
+    "closePrice": 0.00026955
+  },
+  {
+    "volume": 58649,
+    "open": 0.00026866,
+    "high": 0.00026866,
+    "openTime": 632110800,
+    "closeTime": 632111099.9990001,
+    "low": 0.00026767,
+    "numberOfTrades": 17,
+    "closePrice": 0.00026781
+  },
+  {
+    "volume": 15006,
+    "open": 0.00026751,
+    "high": 0.00026833,
+    "openTime": 632111100,
+    "closeTime": 632111399.9990001,
+    "low": 0.00026742,
+    "numberOfTrades": 15,
+    "closePrice": 0.00026833
+  },
+  {
+    "volume": 16892,
+    "open": 0.00026726,
+    "high": 0.00026807,
+    "openTime": 632111400,
+    "closeTime": 632111699.9990001,
+    "low": 0.0002662,
+    "numberOfTrades": 28,
+    "closePrice": 0.0002662
+  },
+  {
+    "volume": 13709,
+    "open": 0.0002662,
+    "high": 0.00026742,
+    "openTime": 632111700,
+    "closeTime": 632111999.9990001,
+    "low": 0.0002662,
+    "numberOfTrades": 20,
+    "closePrice": 0.00026629
+  },
+  {
+    "volume": 60912,
+    "open": 0.00026683,
+    "high": 0.00026817,
+    "openTime": 632112000,
+    "closeTime": 632112299.9990001,
+    "low": 0.00026683,
+    "numberOfTrades": 19,
+    "closePrice": 0.00026692
+  },
+  {
+    "volume": 13604,
+    "open": 0.00026698,
+    "high": 0.00026754,
+    "openTime": 632112300,
+    "closeTime": 632112599.9990001,
+    "low": 0.0002657,
+    "numberOfTrades": 20,
+    "closePrice": 0.0002657
+  }
+]

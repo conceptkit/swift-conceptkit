@@ -1,0 +1,16 @@
+
+Test Exponent
+--------------
+2 -> Exponent.Base
+5 -> Exponent.Power
+32 = Exponent.Result
+
+Exponent
+----------
+0 -> Current Factor
+1 -> Result
+
+Current Factor + 1 -> Current Factor
+Result * Base -> Result
+
+Power = Current Factor
