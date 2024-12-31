@@ -42,11 +42,11 @@ guard let builtValues = graph["Face"]?.resolve(values: &inputs, graph: graph, is
 
 ## Current Line Counts
 
-17  Concept.swift            (core syntax and data structures) 
-503 Concept+Resolve.swift    (resolver logic)
-76  Concept+Extensions.swift (additional functionality and extensions)
-----
-596
+- 17  Concept.swift            (core syntax and data structures) 
+- 503 Concept+Resolve.swift    (resolver logic)
+- 76  Concept+Extensions.swift (additional functionality and extensions)
+  
+Total: 596
 
 A simple syntax model is bound to result in a low specification code count (Concept.swift), it requires a lot more mental striving to keep the resolver code low. It was always a good feeling to see the code count drop in the resolver as a reflection of a *better* (smaller) Concept Kit syntax. 
 
@@ -102,17 +102,10 @@ Vectors can refer to other concepts in the graph by name, which triggers a resol
 
 ### Self-Referential Vectors
 
-```
-Exponent
-------
-0 -> Current Factor
-1 -> Result
+<img width="147" alt="image" src="https://github.com/user-attachments/assets/3b6c685f-dffa-4647-aa74-7cce534e1163" />
 
-Current Factor + 1 -> Current Factor
-Result * Base -> Result
 
-Power = Current Factor
-```
+```Current Factor + 1 -> Current Factor```
 
 Typically, all vectors are resolved once, respecting dependancy, but self-referential vectors introduce a potential infinite loop, or are at least ambiguous to how many times it should loop. Therefore, as the condition `Power = Current Factor` fails, it will trace *upstream* the inclusion graph until the first looping vector is found, in which case it can `Current Factor + 1` again and retry the condition upstream. This helps to fulfill the vector's looping destiny as well as creating a mechanism for `Concept`s to describe a concept that can't finish resolving on a single vector pulse. 
 
