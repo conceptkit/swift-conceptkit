@@ -27,7 +27,9 @@ For purposes of the foregoing, “Sell” means practicing any or all of the rig
 
 
 Software: Concept Kit Parser & Resolver - Swift
+
 License: MIT with Commons Clause
+
 Licensor: Mitchell M. N. Robertson
 
 Copyright (C) 2024 - Mitchell M. N. Robertson
