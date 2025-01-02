@@ -68,6 +68,7 @@ Result * Base -> Result
 
 Power = Current Factor
 
+
 Test Exponent
 --------------
 2 -> Exponent.Base
