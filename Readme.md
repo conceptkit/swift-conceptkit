@@ -12,6 +12,9 @@ It is still in the working preview phase, with some ontological flaws to be addr
 
 Here is a concept graph containing inter-related concepts. 
 
+<img width="255" alt="image" src="https://github.com/user-attachments/assets/69a097df-f845-4110-bb3d-208f77aafa18" /><img width="300" alt="image" src="https://github.com/user-attachments/assets/08bf7017-d879-4710-b0fb-804a698fc963" />
+
+
 ```
 Square
 ----------
@@ -23,8 +26,6 @@ Test Square
 Square.Result = 49
 
 ```
-
-<img width="255" alt="image" src="https://github.com/user-attachments/assets/69a097df-f845-4110-bb3d-208f77aafa18" /><img width="300" alt="image" src="https://github.com/user-attachments/assets/08bf7017-d879-4710-b0fb-804a698fc963" />
 
 
 Resolving `Test Square`, will trigger the resolving of `Square` by it's mention.
