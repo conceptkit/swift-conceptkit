@@ -1,38 +1,49 @@
 ## Introduction
 
-Concept Kit is a multi-modal conceptual language with a very small number of available syntax operations (about 5). There are no types, classes, functions, data types or strings. There is only the `Concept` with it's inclusions and `Vector`s. Locating an Occam's razor syntax set that can specify and resolve a growing list of automation goals can be very difficult. It must be reflexively intuitive yet still capable and deterministic. Concept Kit asks the analyst to specify a series of `Concept`s that form a `[ConceptID: Concept]` or `ConceptGraph` superstructure.
+Concept Kit is a multi-modal conceptual language with a minimal array of available syntax operations (about 5). There are no types, classes, functions, data types or strings. There is only the `Concept` with it's inclusions and `Vector`s. Instead of procedural code, Concept Kit asks the analyst to specify a series of `Concept`s that form a `[ConceptID: Concept]` or `ConceptGraph` superstructure. Instead of executing a program, one "resolves" a `Concept` in the graph.
 
-Traditional procedural languages allow analysts to declare statement order, encapsulate logic, offer hardware abstractions, and utilize many other syntactic functions, all in the hope of intuitively and efficiently expressing the required automation. The actual conceptual automation goals behind the codebase are held in the analyst's mind, and tokens of (usually) procedural languages are arranged to achieve those goals. 
+Traditional procedural languages require analysts to define the order of statements, encapsulate logic, abstract hardware details, and use various syntactic constructs to intuitively and efficiently express automation goals. However, the underlying conceptual goals of the automation remain in the analyst's mind, with procedural language tokens arranged to approximate those goals.
 
-Conversely, Concept Kit concerns itself with finding an intuitive concept framework, from which a method of computation can also be derived. Instead of executing a program, one "resolves" a concept in the graph. Concept Kit aims to demonstrate that it's conceptual specification is a superior substrate to store automation goals & analytic information in general. 
+In contrast, Concept Kit focuses on providing an intuitive conceptual framework from which a new computational method is derived. It aims to demonstrate that it is a cleaner, more concise, and accessible language for implementing automation goals. A Concept Kit codebase is designed to serve as a fundamentally different resource compared to a procedural codebase.
 
-It is still in the working preview phase, with some ontological flaws to be addressed. Examples and recipes will be added soon to help users get started with integrating Concept Kit into their projects. You are invited to join our community to stay up-to-date on our progress.
+Note: It is still in the working preview phase, with some ontological flaws to be addressed. Examples and recipes will be added soon. You are invited to join our community to stay up-to-date on our progress.
 
 ## Quick Syntax Guide
 
 Here is a concept graph containing inter-related concepts. 
 
-<img width="255" alt="image" src="https://github.com/user-attachments/assets/69a097df-f845-4110-bb3d-208f77aafa18" /><img width="300" alt="image" src="https://github.com/user-attachments/assets/08bf7017-d879-4710-b0fb-804a698fc963" />
-
+<img width="647" alt="image" src="https://github.com/user-attachments/assets/2068c55f-871f-4089-92ba-526e34d830b1" />
 
 ```
-Square
-----------
-Number * Number -> Result
-
 Test Square
 ------
 7 -> Square.Number
 Square.Result = 49
+
+Square
+----------
+Number * Number -> Result
 
 ```
 
 
 Resolving `Test Square`, will trigger the resolving of `Square` by it's mention.
 
-### Inclusions
+A concept's inclusions are the elements within a concept. Numbers move between inclusions via the arrows. Vectors (conceptual arrows) can indicate directional dependency between inclusions.
 
-A concept's inclusions are the elements within a concept. Numbers move between inclusions via the arrows. Vectors (conceptual arrows) can indicate directional dependency between inclusions. They can also represent arithmetic synthesis, where the output of one inclusion is used as input to another. Additionally, vectors can impose conditional constraints, controlling the flow of data between inclusions.
+Examples:
+
+`Pixel.Index + 1 -> Final Index`
+
+`Total / Count -> Average`
+
+Additionally, vectors can impose conditional constraints on the concept's resolution.
+
+Examples:
+
+`First.Object.Index >= Last.Object.Index`
+
+`Next.Object.Index = 1`
 
 All possible inclusion arithmetic combinations:
 - Add: +
@@ -81,13 +92,20 @@ Test Exponent
 
 ```Current Factor + 1 -> Current Factor```
 
-Typically, all vectors are resolved once, respecting dependancy, but self-referential vectors introduce a potential infinite loop, or are at least ambiguous to how many times it should loop. Therefore, as the condition `Power = Current Factor` fails, it will trace *upstream* the inclusion graph until the first looping vector is found, in which case it can `Current Factor + 1` again and retry the condition *downstream*. This mechanism helps to fulfill the vector's looping realities and enables `Concept`s to model that which cannot be fully resolved after a single vector pulse. Most importantly, this provides a handle on plurality as a concept.
+Typically, all vectors are resolved once, respecting dependancy, but self-referential vectors introduce a potential infinite loop, or are at least ambiguous to how many times it should loop. Therefore, as the condition `Power = Current Factor` fails, it will trace *upstream* the inclusion graph until the first looping vector is found, in which case it can execute `Current Factor + 1` again, and eventually retrying the condition *downstream*. This mechanism helps to fulfill the vector's looping realities and enables `Concept`s to model that which cannot be fully resolved after a single vector pulse. Most importantly, this provides a handle on modeling plurality as a concept.
 
 ### Data Sources
 
 The world outside a `ConceptGraph` is constrained to various "frames" of a key/value store. The keys are `ConceptIDPath`s and the values are `Double`s. 
 
 ```
+var data = [
+    [["Index"]: 0, ["Color", "Red"]: 244, ["Color", "Green"]: 132, ["Color", "Blue"]: 132]],
+    [["Index"]: 1, ["Color", "Red"]: 213, ["Color", "Green"]: 12, ["Color", "Blue"]: 43]],
+]
+
+
+// backing data types
 typealias ConceptID = String
 typealias ConceptIDPath = [ConceptID]
 typealias ConceptValues = [ConceptIDPath: Double]
@@ -139,7 +157,7 @@ guard let outputs: [ConceptIDPath: Double] = graph["Face"]?.resolve(values: &inp
 
 ## Source Code Information
 
-This Swift implementation is intended to be the first of many. A key objective throughout the development has been to minimize line counts in concept-resolving code, and this will remain a priority moving forward. By keeping the resolution logic concise, it remains straightforward and easy to use. Small implementation footprints should enable rapid implementation of Concept Kit resolvers across a wide range of software environments.
+This Swift implementation is intended to be the first of several. A key objective throughout the development has been to minimize line counts in concept-resolving code, and this will remain a priority moving forward. By keeping the resolution logic concise, it remains straightforward and easy to use. Small implementation footprints should enable rapid implementation of Concept Kit resolvers across a wide range of software environments.
 
 | Line Count | File |  |
 | ----- | ----- | ----- |
