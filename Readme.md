@@ -12,7 +12,12 @@ Note: It is still in the working preview phase, with some ontological flaws to b
 
 Here is a concept graph containing inter-related concepts. 
 
+**Graph Representation:**
+
 <img width="647" alt="image" src="https://github.com/user-attachments/assets/2068c55f-871f-4089-92ba-526e34d830b1" />
+
+
+**Text Representation:**
 
 ```
 Test Square
