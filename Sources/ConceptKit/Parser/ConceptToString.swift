@@ -38,7 +38,7 @@ extension Double {
     }
 }
 
-extension Concept.Vector {
+extension Vector {
     func toCode() -> String {
         let feedSymbol: String = Operator.feed.toCode()
         guard operat0r != .feed else {
@@ -70,7 +70,7 @@ extension Concept.Vector {
     }
 }
 
-extension Concept.Vector.Operator {
+extension Vector.Operator {
     func toCode() -> String {
         switch self {
         case .feed:
@@ -117,6 +117,6 @@ extension ConceptID {
 
 public extension ConceptValues {
     func toCode() -> String {
-        return self.map { Concept.Vector(from: [$0.value.renderTrimmed()], target: $0.key, operat0r: .feed).toCode() }.joined(separator: "\n")
+        return self.map { Vector(from: [$0.value.renderTrimmed()], target: $0.key, operand: nil, operat0r: .feed).toCode() }.joined(separator: "\n")
     }
 }

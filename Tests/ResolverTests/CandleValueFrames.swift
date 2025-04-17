@@ -1,5 +1,5 @@
 import QuartzCore
-import Core
+import ConceptKit
 
 public class CandleValueFrames {
     public struct Candle: Codable {

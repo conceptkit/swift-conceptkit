@@ -1,5 +1,5 @@
 import XCTest
-@testable import Core
+@testable import ConceptKit
 
 class ConceptToStringTest: XCTestCase {
     override func setUpWithError() throws {
@@ -73,6 +73,7 @@ class ConceptToStringTest: XCTestCase {
                 .init(
                     from: ["Size"],
                     target: ["Minimum Count"],
+                    operand: nil,
                     operat0r: .greaterThan
                 )
             )

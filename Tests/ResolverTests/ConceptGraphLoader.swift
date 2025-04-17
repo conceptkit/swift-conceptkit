@@ -1,5 +1,5 @@
 import Foundation
-import Core
+import ConceptKit
 
 public enum ConceptGraphLoadError: Error {
     case couldntLoadFile

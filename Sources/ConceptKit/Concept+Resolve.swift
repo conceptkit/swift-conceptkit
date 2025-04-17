@@ -8,7 +8,7 @@ enum ConceptValue {
 class ResolveCache {
     var resolvedConceptCache = [ConceptIDPath: [Int: ConceptValues]]()
     var resolvedConceptLastIndices = [ConceptIDPath: Int]()
-    private var virtualVectorCache = [ConceptIDPath: [Concept.Vector]]()
+    private var virtualVectorCache = [ConceptIDPath: [Vector]]()
 }
 
 class ConceptValuesInterface {
@@ -40,7 +40,7 @@ extension Concept {
         }
         
         func buildVectorList(_ vectorsToProcess: [Vector], built: inout Set<Vector>, virtualVectors: inout [Vector], externalLinkVectors: [ConceptIDPath: Vector], isSkippingSelfReferential: Bool) -> [ConceptIDPath] {
-            func buildVector(_ vector: Concept.Vector, nextVector: Vector?) -> [ConceptIDPath] {
+            func buildVector(_ vector: Vector, nextVector: Vector?) -> [ConceptIDPath] {
                 guard let fromValue = outputCV.getActiveValue(vector.from, graph: graph, virtualVectors: &virtualVectors, externalLinkVectors: externalLinkVectors, built: &built, cache: cache, isHardStop: &isHardStop) else {
                     return [vector.from]
                 }
@@ -138,7 +138,7 @@ extension Concept {
         }
         
         let cycleVectors = self.vectors.filter { $0.isSelfReferential() }
-        var externalLinkedCycleVectors = [ConceptIDPath: Concept.Vector]()
+        var externalLinkedCycleVectors = [ConceptIDPath: Vector]()
         for cycleVector in cycleVectors {
             guard let linked = graph.linkedKey(inPath: cycleVector.target) ?? outputCV.dataSources.linkedKey(inPath: cycleVector.target) else { continue }
             externalLinkedCycleVectors[linked] = cycleVector
@@ -207,14 +207,14 @@ extension Concept {
 }
 
 fileprivate extension ResolveCache {
-    func virtualVectorsFor(path: ConceptIDPath) -> [Concept.Vector]? {
+    func virtualVectorsFor(path: ConceptIDPath) -> [Vector]? {
         if let vectors = self.virtualVectorCache[path], vectors.count > 0 {
             return vectors
         }
         return nil
     }
     
-    func cacheRealizationSuccess(path: ConceptIDPath, index: Int, outputs: ConceptValues, virtualVectors: [Concept.Vector]) {
+    func cacheRealizationSuccess(path: ConceptIDPath, index: Int, outputs: ConceptValues, virtualVectors: [Vector]) {
         var conceptResolvedCache = self.resolvedConceptCache[path] ?? .init()
         conceptResolvedCache[index] = outputs.union([["Index"]: Double(index)])
         self.resolvedConceptCache[path] = conceptResolvedCache
@@ -303,13 +303,13 @@ fileprivate extension ConceptValuesInterface {
         }
     }
     
-    func getActiveValue(_ path: ConceptIDPath, graph: ConceptGraph, isExclusion: Bool = false, virtualVectors: inout [Concept.Vector], externalLinkVectors: [ConceptIDPath: Concept.Vector], built: inout Set<Concept.Vector>, cache: ResolveCache, isHardStop: inout Bool) -> ConceptValue? {
+    func getActiveValue(_ path: ConceptIDPath, graph: ConceptGraph, isExclusion: Bool = false, virtualVectors: inout [Vector], externalLinkVectors: [ConceptIDPath: Vector], built: inout Set<Vector>, cache: ResolveCache, isHardStop: inout Bool) -> ConceptValue? {
         if let value = path.numberValue {
             return .single(value)
         }
         
         func addVirtualIndexIncrementVector(_ indexPath: ConceptIDPath) {
-            let virtualVector = Concept.Vector(from: indexPath, target: indexPath, operand: ["1"], operat0r: .add)
+            let virtualVector = Vector(from: indexPath, target: indexPath, operand: ["1"], operat0r: .add)
             ///// performance issue
             let containsAlready = virtualVectors.contains { v in
                 v.toCode() == virtualVector.toCode()
@@ -397,7 +397,7 @@ fileprivate extension ConceptValuesInterface {
 }
 
 fileprivate extension ConceptValue {
-    func runVectorOperator(otherValue: ConceptValue, otherPath: ConceptIDPath, operat0r: Concept.Vector.Operator) -> ConceptValue? {
+    func runVectorOperator(otherValue: ConceptValue, otherPath: ConceptIDPath, operat0r: Vector.Operator) -> ConceptValue? {
         switch self {
         case .single(let val):
             switch otherValue {
@@ -448,12 +448,12 @@ fileprivate extension ConceptValues {
     }
 }
 
-fileprivate extension Array where Element == Concept.Vector {
+fileprivate extension Array where Element == Vector {
     // Calculates the build order based on the dependancies within.
-    func calcBuildOrder() -> [Concept.Vector] {
+    func calcBuildOrder() -> [Vector] {
         let top = self.getLeafInclusions()
-        var seen = Set<Concept.Vector>()
-        var vectorsToBuild: [Concept.Vector] = []
+        var seen = Set<Vector>()
+        var vectorsToBuild: [Vector] = []
         for leaf in top {
             let upstream = self.vectorsUpstreamOf(leaf).sorted { v1, v2 in
                 if !v1.isSelfReferential() && v2.isSelfReferential() {
@@ -541,9 +541,9 @@ fileprivate extension Array where Element == Concept.Vector {
     }
     
     // Returns all vectors feeding this inclusion `path`.
-    func vectorsUpstreamOf(_ path: ConceptIDPath) -> [Concept.Vector] {
-        func _vectorsUpstreamOf(_ path: ConceptIDPath, seen: inout Set<Concept.Vector>) -> [Concept.Vector] {
-            var soFar: [Concept.Vector] = []
+    func vectorsUpstreamOf(_ path: ConceptIDPath) -> [Vector] {
+        func _vectorsUpstreamOf(_ path: ConceptIDPath, seen: inout Set<Vector>) -> [Vector] {
+            var soFar: [Vector] = []
             // put self referential ones first since this is from an upstream (backwards to downstream) perspective
             let nextVectors = self.filter { return $0.target.first == path.first }.sorted { v1, v2 in
                 if !v1.isSelfReferential() && v2.isSelfReferential() {
@@ -562,13 +562,13 @@ fileprivate extension Array where Element == Concept.Vector {
             return soFar
         }
         
-        var seen = Set<Concept.Vector>()
+        var seen = Set<Vector>()
         return _vectorsUpstreamOf(path, seen: &seen)
     }
     
     // Returns all vectors downstream of this inclusion `path`.
-    func vectorsDownstreamOf(_ path: ConceptIDPath, soFarSet: inout Set<Concept.Vector>) -> [Concept.Vector] {
-        var soFar: [Concept.Vector] = []
+    func vectorsDownstreamOf(_ path: ConceptIDPath, soFarSet: inout Set<Vector>) -> [Vector] {
+        var soFar: [Vector] = []
         let nextVectors = self.filter {
             $0.from.first == path.first || $0.operand?.first == path.first
         }
@@ -581,7 +581,7 @@ fileprivate extension Array where Element == Concept.Vector {
     }
 }
 
-fileprivate extension Concept.Vector {
+fileprivate extension Vector {
     func isSelfReferential() -> Bool {
         guard self.operat0r != .feed, !target.isEmpty else { return false }
         return from == target || operand == target

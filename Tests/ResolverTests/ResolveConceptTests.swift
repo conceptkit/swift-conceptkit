@@ -1,5 +1,5 @@
 import XCTest
-@testable import Core
+@testable import ConceptKit
 
 final class ResolveConceptTests: XCTestCase {
 

@@ -6,23 +6,26 @@ import PackageDescription
 let package = Package(
     name: "ConceptKit",
     platforms: [
-        .macOS("10.13"), .iOS("12.0"), .tvOS("12.0"), .watchOS("4.0")
+        .macOS(.v10_13),
+        .iOS(.v12),
+        .tvOS(.v12),
+        .watchOS(.v4)
     ],
     products: [
         .library(
-            name: "Core",
-            targets: ["Core"])
+            name: "ConceptKit",
+            targets: ["ConceptKit"])
     ],
     targets: [
         .target(
-            name: "Core",
+            name: "ConceptKit",
             dependencies: []),
         .testTarget(
             name: "ParserTests",
-            dependencies: ["Core"]),
+            dependencies: ["ConceptKit"]),
         .testTarget(
             name: "ResolverTests",
-            dependencies: ["Core"],
+            dependencies: ["ConceptKit"],
             resources: [
                 .process("Resources")
             ])

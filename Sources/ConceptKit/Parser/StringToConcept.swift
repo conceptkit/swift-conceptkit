@@ -10,7 +10,7 @@ public extension ConceptGraph {
         
         var currentIDPath: ConceptIDPath = .init()
         var currentLHS: ConceptIDPath?
-        var currentOperator: Concept.Vector.Operator?
+        var currentOperator: Vector.Operator?
         var currentFeedOperand: ConceptIDPath?
         
         func reset() {
@@ -26,7 +26,7 @@ public extension ConceptGraph {
             if currentFeedOperand == nil, let currentOperator = currentOperator, currentOperator != .feed, let currentLHS = currentLHS, !currentIDPath.isEmpty {
                 // probably a condition?
                 scope = scope?.addVector(
-                    Concept.Vector(
+                    Vector(
                         from: currentLHS,
                         target: [],
                         operand: currentIDPath,
@@ -39,7 +39,7 @@ public extension ConceptGraph {
             let lhs = currentLHS ?? currentIDPath
             let op = currentOperator ?? .feed
             scope = scope?.addVector(
-                Concept.Vector(
+                Vector(
                     from: lhs,
                     target: currentIDPath,
                     operand: currentFeedOperand,
@@ -151,13 +151,13 @@ public extension ConceptGraph {
     }
 }
 
-extension Concept.Vector {
-    static func fromCode(_ string: String, error: inout String?) -> Concept.Vector? {
+extension Vector {
+    static func fromCode(_ string: String, error: inout String?) -> Vector? {
         return nil
     }
 }
 
-extension Concept.Vector.Operator {
+extension Vector.Operator {
     var isSignIndicator: Bool {
         switch self {
         case .add:
@@ -171,32 +171,32 @@ extension Concept.Vector.Operator {
 }
 
 extension String {
-    func toVectorOperator() -> Concept.Vector.Operator? {
-        if self == "->" || self == Concept.Vector.Operator.feed.toCode()  {
+    func toVectorOperator() -> Vector.Operator? {
+        if self == "->" || self == Vector.Operator.feed.toCode()  {
             return .feed
-        } else if self == Concept.Vector.Operator.add.toCode() {
+        } else if self == Vector.Operator.add.toCode() {
             return .add
-        } else if self == Concept.Vector.Operator.diff.toCode() {
+        } else if self == Vector.Operator.diff.toCode() {
             return .diff
-        } else if self == Concept.Vector.Operator.diffabs.toCode() {
+        } else if self == Vector.Operator.diffabs.toCode() {
             return .diffabs
-        } else if self == Concept.Vector.Operator.divide.toCode() {
+        } else if self == Vector.Operator.divide.toCode() {
             return .divide
-        } else if self == Concept.Vector.Operator.divideint.toCode() {
+        } else if self == Vector.Operator.divideint.toCode() {
             return .divideint
-        } else if self == Concept.Vector.Operator.multiply.toCode() {
+        } else if self == Vector.Operator.multiply.toCode() {
             return .multiply
-        } else if self == Concept.Vector.Operator.multiplyint.toCode() {
+        } else if self == Vector.Operator.multiplyint.toCode() {
             return .multiplyint
-        } else if self == Concept.Vector.Operator.equalTo.toCode() {
+        } else if self == Vector.Operator.equalTo.toCode() {
             return .equalTo
-        } else if self == Concept.Vector.Operator.notEqualTo.toCode() {
+        } else if self == Vector.Operator.notEqualTo.toCode() {
             return .notEqualTo
-        } else if self == Concept.Vector.Operator.greaterThan.toCode() {
+        } else if self == Vector.Operator.greaterThan.toCode() {
             return .greaterThan
-        } else if self == Concept.Vector.Operator.lessThan.toCode() {
+        } else if self == Vector.Operator.lessThan.toCode() {
             return .lessThan
-        } else if self == Concept.Vector.Operator.lessThanOrEqualTo.toCode() {
+        } else if self == Vector.Operator.lessThanOrEqualTo.toCode() {
             return .lessThanOrEqualTo
         }
         return nil

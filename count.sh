@@ -2,7 +2,7 @@
 
 total=0
 
-for file in $(find ./ConceptKit -type f -name '*.swift'); do
+for file in $(find ./Sources -type f -name '*.swift'); do
   count=$(awk '
     /^[[:space:]]*$/ { next }
     /^[[:space:]]*\/\/.*$/ { next }

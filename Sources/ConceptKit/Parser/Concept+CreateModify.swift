@@ -13,7 +13,7 @@ public class ModificationScope {
 extension ConceptGraph {
     public mutating func modify(
         _ id: ConceptID,
-        vectors: [Concept.Vector]? = nil,
+        vectors: [Vector]? = nil,
         inclusions: Set<ConceptIDPath>? = nil,
         values: ConceptValues? = nil
     ) -> ModificationScope {
@@ -40,18 +40,6 @@ extension Concept {
     }
 }
 
-extension Concept.Vector {
-     public init(
-        from: ConceptIDPath,
-        target: ConceptIDPath,
-        operat0r: Concept.Vector.Operator) {
-        self.from = from
-        self.target = target
-        self.operand = nil
-        self.operat0r = operat0r
-     }
-}
-
 extension ModificationScope {
     public func addValueFeed(_ value: Double, forInclusion path: ConceptIDPath) -> ModificationScope {
         let concept = graph[id] ?? Concept(id)
@@ -64,12 +52,12 @@ extension ModificationScope {
             }
         }
 
-        let vectorFeedValue = Concept.Vector(from: [toString(value)], target: path, operat0r: .feed)
+        let vectorFeedValue = Vector(from: [toString(value)], target: path, operand: nil, operat0r: .feed)
         graph[id] = Concept(id: id, vectors: concept.vectors + [vectorFeedValue])
         return .init(id, graph: graph)
     }
     
-    public func addVector( _ vector: Concept.Vector) -> ModificationScope {
+    public func addVector( _ vector: Vector) -> ModificationScope {
         let concept = graph[id] ?? Concept(id)
         
         var vectors = concept.vectors

@@ -29,7 +29,7 @@ extension ConceptIDPath {
     }
 }
 
-public extension Concept.Vector.Operator {
+public extension Vector.Operator {
     func calc(_ input: Double, operandValue: Double?) -> Double? {
         guard let operandValue = operandValue else { return input }
         
