@@ -11,19 +11,19 @@ public extension ConceptGraph {
         var currentIDPath: ConceptIDPath = .init()
         var currentLHS: ConceptIDPath?
         var currentOperator: Vector.Operator?
-        var currentFeedOperand: ConceptIDPath?
+        var currentFeedOperand: ConceptIDPath = .init()
         
         func reset() {
             currentLHS = nil
             currentIDPath = .init()
-            currentFeedOperand = nil
+            currentFeedOperand = .init()
             currentOperator = nil
         }
         
         func tryCloseOutVectorOrCondition() {
-            guard currentLHS != nil || currentFeedOperand != nil || currentOperator != nil || !currentIDPath.isEmpty else { return }
+            guard currentLHS != nil || !currentFeedOperand.isEmpty || currentOperator != nil || !currentIDPath.isEmpty else { return }
 
-            if currentFeedOperand == nil, let currentOperator = currentOperator, currentOperator != .feed, let currentLHS = currentLHS, !currentIDPath.isEmpty {
+            if currentFeedOperand.isEmpty, let currentOperator = currentOperator, currentOperator != .feed, let currentLHS = currentLHS, !currentIDPath.isEmpty {
                 // probably a condition?
                 scope = scope?.addVector(
                     Vector(
@@ -106,7 +106,7 @@ public extension ConceptGraph {
                     currentFeedOperand = currentIDPath
                     currentIDPath = .init()
                 }
-                if currentFeedOperand == nil {
+                if currentFeedOperand.isEmpty {
                     currentOperator = .feed
                     if !currentIDPath.isEmpty {
                         currentLHS = currentIDPath

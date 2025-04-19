@@ -17,13 +17,13 @@ class ConceptToStringTest: XCTestCase {
                 .init(
                     from: ["First", "Inclusion"],
                     target: ["Second", "Inclusion"],
-                    operand: nil,
+                    operand: [],
                     operat0r: .feed))
             .addVector(
                 .init(
                     from: ["Size"],
                     target: ["Minimum Count"],
-                    operand: nil,
+                    operand: [],
                     operat0r: .greaterThan))
             .graph
         
@@ -73,7 +73,7 @@ class ConceptToStringTest: XCTestCase {
                 .init(
                     from: ["Size"],
                     target: ["Minimum Count"],
-                    operand: nil,
+                    operand: [],
                     operat0r: .greaterThan
                 )
             )

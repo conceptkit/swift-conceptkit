@@ -46,7 +46,9 @@ extension Vector {
             + feedSymbol + " "
                 + target.toCode()
         }
-        if let op = operand {
+        
+        let op = operand
+        if !operand.isEmpty {
             if !target.isEmpty {
                 return from.toCode() + " "
                 + operat0r.toCode() + " "
@@ -117,6 +119,6 @@ extension ConceptID {
 
 public extension ConceptValues {
     func toCode() -> String {
-        return self.map { Vector(from: [$0.value.renderTrimmed()], target: $0.key, operand: nil, operat0r: .feed).toCode() }.joined(separator: "\n")
+        return self.map { Vector(from: [$0.value.renderTrimmed()], target: $0.key, operand: [], operat0r: .feed).toCode() }.joined(separator: "\n")
     }
 }

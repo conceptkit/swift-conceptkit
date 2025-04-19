@@ -45,7 +45,8 @@ extension Concept {
                     return [vector.from]
                 }
                 var valueToCopy = fromValue
-                if let operand = vector.operand {
+                let operand = vector.operand
+                if !operand.isEmpty {
                     guard let operandValue = outputCV.getActiveValue(operand, graph: graph, virtualVectors: &virtualVectors, externalLinkVectors: externalLinkVectors, built: &built, cache: cache, isHardStop: &isHardStop) else {
                         return [operand]
                     }
@@ -130,7 +131,7 @@ extension Concept {
                     return virtual
                 } else if uVector.isSelfReferential() {
                     return uVector
-                } else if let operand = uVector.operand, !operand.isEmpty, let virtual = firstVirtualVector(operand, dict: graph) {
+                } else if !uVector.operand.isEmpty, let virtual = firstVirtualVector(uVector.operand, dict: graph) {
                     return virtual
                 }
             }
@@ -479,11 +480,11 @@ fileprivate extension Array where Element == Vector {
             if !vector.from.isEmpty, fromNumberVal == nil {
                 potentialTops.append(vector.from)
             }
-            if let operand = vector.operand, !operand.isEmpty, operand.numberValue == nil {
-                potentialTops.append(operand)
+            if !vector.operand.isEmpty, vector.operand.numberValue == nil {
+                potentialTops.append(vector.operand)
             }
             
-            if fromNumberVal != nil, vector.operand == nil, !vector.target.isEmpty {
+            if fromNumberVal != nil, vector.operand.isEmpty, !vector.target.isEmpty {
                 potentialTops.append(vector.target);
             } else if (vector.from != vector.target && vector.operand != vector.target) {
                 excludedTargets.insert(vector.target)
@@ -555,8 +556,8 @@ fileprivate extension Array where Element == Vector {
                 soFar.append(vector)
                 seen.insert(vector)
                 soFar += _vectorsUpstreamOf(vector.from, seen: &seen)
-                if let operand = vector.operand {
-                    soFar += _vectorsUpstreamOf(operand, seen: &seen)
+                if !vector.operand.isEmpty {
+                    soFar += _vectorsUpstreamOf(vector.operand, seen: &seen)
                 }
             }
             return soFar
@@ -570,7 +571,7 @@ fileprivate extension Array where Element == Vector {
     func vectorsDownstreamOf(_ path: ConceptIDPath, soFarSet: inout Set<Vector>) -> [Vector] {
         var soFar: [Vector] = []
         let nextVectors = self.filter {
-            $0.from.first == path.first || $0.operand?.first == path.first
+            $0.from.first == path.first || $0.operand.first == path.first
         }
         for vector in nextVectors where !soFarSet.contains(vector) {
             soFar.append(vector)

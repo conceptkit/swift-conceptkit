@@ -42,7 +42,7 @@ class StringToConceptTest: XCTestCase {
             $0.target.first == "Man"
         }), "Missing Cool → Man vector")
         XCTAssertTrue(deepIncrement.vectors.contains(where: { vector in
-            vector.from.toCode() == "Should Be Seven" && vector.operand?.toCode() == "Seven" && vector.operat0r == .equalTo && vector.target == []
+            vector.from.toCode() == "Should Be Seven" && vector.operand.toCode() == "Seven" && vector.operat0r == .equalTo && vector.target == []
         }), "Missing condition vector");
     }
     
@@ -246,7 +246,7 @@ class StringToConceptTest: XCTestCase {
         XCTAssertEqual(graph.count, 1)
         XCTAssertEqual(con.vectors.count, 1)
         XCTAssertEqual(con.vectors.first?.from.toCode(), "First.Candle.Index")
-        XCTAssertEqual(con.vectors.first?.operand?.toCode(), "1")
+        XCTAssertEqual(con.vectors.first?.operand.toCode(), "1")
     }
    
     func test_stringToConcepts() {
@@ -275,11 +275,11 @@ class StringToConceptTest: XCTestCase {
             return
         }
         XCTAssertEqual(vectorsSorted[0].from.toCode(), "First.Candle.Index")
-        XCTAssertEqual(vectorsSorted[0].operand?.toCode(), "1")
+        XCTAssertEqual(vectorsSorted[0].operand.toCode(), "1")
         XCTAssertEqual(vectorsSorted[0].target.toCode(), "Last.Candle.Index")
         XCTAssertEqual(vectorsSorted[0].operat0r, .add)
         XCTAssertEqual(vectorsSorted[1].from.toCode(), "Index Diff")
-        XCTAssertEqual(vectorsSorted[1].operand?.toCode(), "1")
+        XCTAssertEqual(vectorsSorted[1].operand.toCode(), "1")
         XCTAssertEqual(vectorsSorted[1].target.toCode(), "Size")
         XCTAssertEqual(vectorsSorted[1].operat0r, .diff)
         XCTAssertEqual(graph?["Rise"]?.vectors[2].operat0r, .greaterThan)

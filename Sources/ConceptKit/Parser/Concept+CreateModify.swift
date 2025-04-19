@@ -52,7 +52,7 @@ extension ModificationScope {
             }
         }
 
-        let vectorFeedValue = Vector(from: [toString(value)], target: path, operand: nil, operat0r: .feed)
+        let vectorFeedValue = Vector(from: [toString(value)], target: path, operand: [], operat0r: .feed)
         graph[id] = Concept(id: id, vectors: concept.vectors + [vectorFeedValue])
         return .init(id, graph: graph)
     }
