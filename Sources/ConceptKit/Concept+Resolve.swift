@@ -30,8 +30,21 @@ public class ConceptValuesInterface {
     }
 }
 
+public typealias TraceEvent = (context: ConceptIDPath, path: ConceptIDPath, clockTime: UInt64, success: Bool)
+public class Trace {
+    public var traceSoFar: [TraceEvent] = []
+    
+    public func didResolvePath(_ path: ConceptIDPath, context: ConceptIDPath) {
+        traceSoFar.append(TraceEvent(context, path, DispatchTime.now().uptimeNanoseconds, true))
+    }
+    
+    public func didFailPath(_ path: ConceptIDPath, context: ConceptIDPath) {
+        traceSoFar.append(TraceEvent(context, path, DispatchTime.now().uptimeNanoseconds, false))
+    }
+}
+
 public extension Concept {
-    func resolve(values outputCV: ConceptValuesInterface = ConceptValuesInterface(), graph: ConceptGraph, isHardStop: inout Bool, cache: ResolveCache = .init()) -> ConceptValues? {
+    func resolve(values outputCV: ConceptValuesInterface = ConceptValuesInterface(), graph: ConceptGraph, isHardStop: inout Bool, cache: ResolveCache = .init(), trace: inout Trace) -> ConceptValues? {
         var allInputs = outputCV.localValues
         let specifiedIndex: Int? = allInputs[["Index"]] != nil ? Int(allInputs[["Index"]]!) : nil
         let requiredIndex = Int(allInputs[["Index"]] ?? Double(0))
@@ -45,17 +58,22 @@ public extension Concept {
             virtualVectors = vVectors
         }
         
+        // Return failed vectors if any
         func buildVectorList(_ vectorsToProcess: [Vector], built: inout Set<Vector>, virtualVectors: inout [Vector], externalLinkVectors: [ConceptIDPath: Vector], isSkippingSelfReferential: Bool) -> [ConceptIDPath] {
             func buildVector(_ vector: Vector, nextVector: Vector?) -> [ConceptIDPath] {
-                guard let fromValue = outputCV.getActiveValue(vector.from, graph: graph, virtualVectors: &virtualVectors, externalLinkVectors: externalLinkVectors, built: &built, cache: cache, isHardStop: &isHardStop) else {
+                guard let fromValue = outputCV.getActiveValue(vector.from, graph: graph, virtualVectors: &virtualVectors, externalLinkVectors: externalLinkVectors, built: &built, cache: cache, isHardStop: &isHardStop, trace: &trace) else {
+                    trace.didFailPath(vector.from, context: outputCV.context + [self.id])
                     return [vector.from]
                 }
+                trace.didResolvePath(vector.from, context: outputCV.context + [self.id])
                 var valueToCopy = fromValue
                 let operand = vector.operand
                 if !operand.isEmpty {
-                    guard let operandValue = outputCV.getActiveValue(operand, graph: graph, virtualVectors: &virtualVectors, externalLinkVectors: externalLinkVectors, built: &built, cache: cache, isHardStop: &isHardStop) else {
+                    guard let operandValue = outputCV.getActiveValue(operand, graph: graph, virtualVectors: &virtualVectors, externalLinkVectors: externalLinkVectors, built: &built, cache: cache, isHardStop: &isHardStop, trace: &trace) else {
+                        trace.didFailPath(operand, context: outputCV.context + [self.id])
                         return [operand]
                     }
+                    trace.didResolvePath(operand, context: outputCV.context + [self.id])
                     guard let merged = fromValue.runVectorOperator(otherValue: operandValue, otherPath: operand, operat0r: vector.operat0r) else {
                         if (vector.target.isEmpty) {
                             return [vector.from, operand]
@@ -69,19 +87,23 @@ public extension Concept {
                     let cleanedTarget = vector.target.map { $0.stripExclusion() }
                     outputCV.copyVal(valueToCopy, toPath: cleanedTarget, graph: graph)
                     if vector.target.first != nextVector?.target.first {
-                        guard outputCV.getActiveValue(cleanedTarget, graph: graph, isExclusion: isExclusion, virtualVectors: &virtualVectors, externalLinkVectors: externalLinkVectors, built: &built, cache: cache, isHardStop: &isHardStop) != nil else {
+                        guard outputCV.getActiveValue(cleanedTarget, graph: graph, isExclusion: isExclusion, virtualVectors: &virtualVectors, externalLinkVectors: externalLinkVectors, built: &built, cache: cache, isHardStop: &isHardStop, trace: &trace) != nil else {
                             if isExclusion {
+                                trace.didResolvePath(cleanedTarget, context: outputCV.context + [self.id])
                                 // success
                                 return []
                             }
                             // failure
+                            trace.didFailPath(cleanedTarget, context: outputCV.context + [self.id])
                             return [vector.target]
                         }
                         if isExclusion {
                             outputCV.cleanEverythingUnder(path: cleanedTarget)
                             // failure
+                            trace.didFailPath(cleanedTarget, context: outputCV.context + [self.id])
                             return [vector.target]
                         }
+                        trace.didResolvePath(cleanedTarget, context: outputCV.context + [self.id])
                     }
                 }
                 
@@ -205,7 +227,7 @@ public extension Concept {
             }
             
             // only cache if index mode = aka move this up a level?
-            cache.cacheRealizationSuccess(path: outputCV.context, index: currentIndex, outputs: outputCV.localValues, virtualVectors: virtualVectors)
+            cache.cacheResolutionSuccess(path: outputCV.context, index: currentIndex, outputs: outputCV.localValues, virtualVectors: virtualVectors)
             currentIndex += 1
         }
         
@@ -221,7 +243,7 @@ fileprivate extension ResolveCache {
         return nil
     }
     
-    func cacheRealizationSuccess(path: ConceptIDPath, index: Int, outputs: ConceptValues, virtualVectors: [Vector]) {
+    func cacheResolutionSuccess(path: ConceptIDPath, index: Int, outputs: ConceptValues, virtualVectors: [Vector]) {
         var conceptResolvedCache = self.resolvedConceptCache[path] ?? .init()
         conceptResolvedCache[index] = outputs.union([["Index"]: Double(index)])
         self.resolvedConceptCache[path] = conceptResolvedCache
@@ -237,13 +259,6 @@ fileprivate extension ResolveCache {
         guard requiredIndex > lastIndex else { return nil}
         guard let lastOutputs = self.resolvedConceptCache[path]?[lastIndex] else { return nil }
         return (lastOutputs, lastIndex)
-    }
-    
-    func clearCache(_ path: ConceptIDPath, index: Int) {
-        guard var conceptCache = self.resolvedConceptCache[path] else {
-            return
-        }
-        conceptCache.removeValue(forKey: index)
     }
 }
 
@@ -310,7 +325,7 @@ fileprivate extension ConceptValuesInterface {
         }
     }
     
-    func getActiveValue(_ path: ConceptIDPath, graph: ConceptGraph, isExclusion: Bool = false, virtualVectors: inout [Vector], externalLinkVectors: [ConceptIDPath: Vector], built: inout Set<Vector>, cache: ResolveCache, isHardStop: inout Bool) -> ConceptValue? {
+    func getActiveValue(_ path: ConceptIDPath, graph: ConceptGraph, isExclusion: Bool = false, virtualVectors: inout [Vector], externalLinkVectors: [ConceptIDPath: Vector], built: inout Set<Vector>, cache: ResolveCache, isHardStop: inout Bool, trace: inout Trace) -> ConceptValue? {
         if let value = path.numberValue {
             return .single(value)
         }
@@ -345,7 +360,7 @@ fileprivate extension ConceptValuesInterface {
                     ingestLocalValues(preBuilt, additionalLocalContext: pathInclConcept)
                 } else {
                     var isLocalFatal = false;
-                    guard let builtValues = innerConcept.resolve(values: allInputs, graph: graph, isHardStop: &isLocalFatal, cache: cache) else {
+                    guard let builtValues = innerConcept.resolve(values: allInputs, graph: graph, isHardStop: &isLocalFatal, cache: cache, trace: &trace) else {
                         if isLocalFatal {
                             isHardStop = true
                         }

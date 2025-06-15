@@ -172,7 +172,8 @@ final class ResolveConceptTests: XCTestCase {
         
         let conceptValuesInterface = ConceptValuesInterface(dataSources: dataSources)
         var isHardStop = false
-        guard let cv = concept.resolve(values: conceptValuesInterface, graph: graph, isHardStop: &isHardStop) else {
+        var trace = Trace()
+        guard let cv = concept.resolve(values: conceptValuesInterface, graph: graph, isHardStop: &isHardStop, trace: &trace) else {
             if isHardStop {
                 throw "Fatally can't build concept `\(conceptID)`"
             } else {
