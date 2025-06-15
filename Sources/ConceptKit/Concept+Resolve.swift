@@ -41,6 +41,10 @@ public class Trace {
     public func didFailPath(_ path: ConceptIDPath, context: ConceptIDPath) {
         traceSoFar.append(TraceEvent(context, path, DispatchTime.now().uptimeNanoseconds, false))
     }
+    
+    public init(traceSoFar: [TraceEvent] = []) {
+        self.traceSoFar = traceSoFar
+    }
 }
 
 public extension Concept {
