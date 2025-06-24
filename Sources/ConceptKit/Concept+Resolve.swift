@@ -30,16 +30,16 @@ public class ConceptValuesInterface {
     }
 }
 
-public typealias TraceEvent = (context: ConceptIDPath, path: ConceptIDPath, clockTime: UInt64, success: Bool)
+public typealias TraceEvent = (context: ConceptIDPath, vector: Vector, partIndex: Int, clockTime: UInt64, success: Bool)
 public class Trace {
     public var traceSoFar: [TraceEvent] = []
     
-    public func didResolvePath(_ path: ConceptIDPath, context: ConceptIDPath) {
-        traceSoFar.append(TraceEvent(context, path, DispatchTime.now().uptimeNanoseconds, true))
+    public func didResolvePath(_ context: ConceptIDPath, vector: Vector, partIndex: Int) {
+        traceSoFar.append(TraceEvent(context, vector: vector, partIndex: partIndex, clockTime: DispatchTime.now().uptimeNanoseconds, success: true))
     }
     
-    public func didFailPath(_ path: ConceptIDPath, context: ConceptIDPath) {
-        traceSoFar.append(TraceEvent(context, path, DispatchTime.now().uptimeNanoseconds, false))
+    public func didFailPath(_ context: ConceptIDPath, vector: Vector, partIndex: Int) {
+        traceSoFar.append(TraceEvent(context, vector: vector, partIndex: partIndex, clockTime: DispatchTime.now().uptimeNanoseconds, success: false))
     }
     
     public init(traceSoFar: [TraceEvent] = []) {
@@ -66,18 +66,18 @@ public extension Concept {
         func buildVectorList(_ vectorsToProcess: [Vector], built: inout Set<Vector>, virtualVectors: inout [Vector], externalLinkVectors: [ConceptIDPath: Vector], isSkippingSelfReferential: Bool) -> [ConceptIDPath] {
             func buildVector(_ vector: Vector, nextVector: Vector?) -> [ConceptIDPath] {
                 guard let fromValue = outputCV.getActiveValue(vector.from, graph: graph, virtualVectors: &virtualVectors, externalLinkVectors: externalLinkVectors, built: &built, cache: cache, isHardStop: &isHardStop, trace: &trace) else {
-                    trace.didFailPath(vector.from, context: outputCV.context + [self.id])
+                    trace.didFailPath(outputCV.context + [self.id], vector: vector, partIndex: 0)
                     return [vector.from]
                 }
-                trace.didResolvePath(vector.from, context: outputCV.context + [self.id])
+                trace.didResolvePath(outputCV.context + [self.id], vector: vector, partIndex: 0)
                 var valueToCopy = fromValue
                 let operand = vector.operand
                 if !operand.isEmpty {
                     guard let operandValue = outputCV.getActiveValue(operand, graph: graph, virtualVectors: &virtualVectors, externalLinkVectors: externalLinkVectors, built: &built, cache: cache, isHardStop: &isHardStop, trace: &trace) else {
-                        trace.didFailPath(operand, context: outputCV.context + [self.id])
+                        trace.didFailPath(outputCV.context + [self.id], vector: vector, partIndex: 1)
                         return [operand]
                     }
-                    trace.didResolvePath(operand, context: outputCV.context + [self.id])
+                    trace.didResolvePath(outputCV.context + [self.id], vector: vector, partIndex: 1)
                     guard let merged = fromValue.runVectorOperator(otherValue: operandValue, otherPath: operand, operat0r: vector.operat0r) else {
                         if (vector.target.isEmpty) {
                             return [vector.from, operand]
@@ -93,21 +93,21 @@ public extension Concept {
                     if vector.target.first != nextVector?.target.first {
                         guard outputCV.getActiveValue(cleanedTarget, graph: graph, isExclusion: isExclusion, virtualVectors: &virtualVectors, externalLinkVectors: externalLinkVectors, built: &built, cache: cache, isHardStop: &isHardStop, trace: &trace) != nil else {
                             if isExclusion {
-                                trace.didResolvePath(cleanedTarget, context: outputCV.context + [self.id])
+                                trace.didResolvePath(outputCV.context + [self.id], vector: vector, partIndex: 2)
                                 // success
                                 return []
                             }
                             // failure
-                            trace.didFailPath(cleanedTarget, context: outputCV.context + [self.id])
+                            trace.didFailPath(outputCV.context + [self.id], vector: vector, partIndex: 2)
                             return [vector.target]
                         }
                         if isExclusion {
                             outputCV.cleanEverythingUnder(path: cleanedTarget)
                             // failure
-                            trace.didFailPath(cleanedTarget, context: outputCV.context + [self.id])
+                            trace.didFailPath(outputCV.context + [self.id], vector: vector, partIndex: 2)
                             return [vector.target]
                         }
-                        trace.didResolvePath(cleanedTarget, context: outputCV.context + [self.id])
+                        trace.didResolvePath(outputCV.context + [self.id], vector: vector, partIndex: 2)
                     }
                 }
                 
