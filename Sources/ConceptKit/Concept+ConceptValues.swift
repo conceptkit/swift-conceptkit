@@ -29,41 +29,6 @@ extension ConceptIDPath {
     }
 }
 
-public extension Vector.Operator {
-    func calc(_ input: Double, operandValue: Double?) -> Double? {
-        guard let operandValue = operandValue else { return input }
-        
-        switch self {
-        case .divide:
-            return input/operandValue
-        case .divideint:
-            return floor(input/operandValue)
-        case .multiply:
-            return input*operandValue
-        case .multiplyint:
-            return floor(input*operandValue)
-        case .add:
-            return input+operandValue
-        case .diff:
-            return input-operandValue
-        case .feed:
-            return input
-        case .diffabs:
-            return abs(input-operandValue)
-        case .greaterThan:
-            return (input > operandValue) ? operandValue : nil
-        case .lessThan:
-            return (input < operandValue) ? operandValue : nil
-        case .equalTo:
-            return (input == operandValue) ? operandValue : nil
-        case .notEqualTo:
-            return (input != operandValue) ? operandValue : nil
-        case .lessThanOrEqualTo:
-            return (input <= operandValue) ? operandValue : nil
-        }
-    }
-}
-
 public extension ConceptValues {
     init(_ other: [Key: Value]) {
         self.init()

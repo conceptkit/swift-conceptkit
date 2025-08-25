@@ -1,13 +1,21 @@
 import Foundation
 
+public extension Vector {
+    func isSelfReferential() -> Bool {
+        guard self.operat0r != .feed, !target.isEmpty else { return false }
+        return from == target || operand == target
+    }
+}
+
 public extension Array where Element == Vector {
     
-    // Calculates the build order based on the dependancies within.
-    func calcBuildOrder() -> [Vector] {
-        let top = self.getLeafInclusions()
+    // Calculates the reverse topological order based on the dependancies within.
+    // It's reverse topological (leaf-first), with dependencies resolved recursively by `getActiveValue`.
+    func calcResolutionOrder() -> [Vector] {
+        let leaves = self.getLeafInclusions()
         var seen = Set<Vector>()
         var vectorsToBuild: [Vector] = []
-        for leaf in top {
+        for leaf in leaves {
             let upstream = self.vectorsUpstreamOf(leaf).sorted { v1, v2 in
                 if !v1.isSelfReferential() && v2.isSelfReferential() {
                     return false
@@ -20,6 +28,37 @@ public extension Array where Element == Vector {
             }
         }
         return vectorsToBuild + (self.filter { !seen.contains($0) })
+    }
+    
+    // Inclusions which are fed but never fed to another.
+    func getLeafInclusions() -> [ConceptIDPath] {
+        var excludedTargets = Set<ConceptIDPath>()
+        var potentialLeaves = [ConceptIDPath]()
+        func exclude(_ path: ConceptIDPath?) {
+            guard let path = path else { return }
+            excludedTargets.insert(path)
+        }
+        
+        for vector in self where !excludedTargets.contains(vector.target) {
+            guard !vector.target.isEmpty else {
+                continue
+            }
+            potentialLeaves.append(vector.target)
+            
+            if vector.from != vector.target {
+                exclude(vector.from)
+            }
+            if vector.operand != vector.target {
+                exclude(vector.operand)
+            }
+        }
+
+        var included = Set<ConceptIDPath>()
+        return potentialLeaves.filter {
+            guard !excludedTargets.contains($0) && !included.contains($0) else { return false }
+            included.insert($0)
+            return true
+        }
     }
     
     // Root inclusions are those which feed others but are never fed.
@@ -63,37 +102,6 @@ public extension Array where Element == Vector {
         }
     }
     
-    // Inclusions which are fed but never fed to another.
-    func getLeafInclusions() -> [ConceptIDPath] {
-        var excludedTargets = Set<ConceptIDPath>()
-        var potentialLeaves = [ConceptIDPath]()
-        func exclude(_ path: ConceptIDPath?) {
-            guard let path = path else { return }
-            excludedTargets.insert(path)
-        }
-        
-        for vector in self where !excludedTargets.contains(vector.target) {
-            guard !vector.target.isEmpty else {
-                continue
-            }
-            potentialLeaves.append(vector.target)
-            
-            if vector.from != vector.target {
-                exclude(vector.from)
-            }
-            if vector.operand != vector.target {
-                exclude(vector.operand)
-            }
-        }
-
-        var included = Set<ConceptIDPath>()
-        return potentialLeaves.filter {
-            guard !excludedTargets.contains($0) && !included.contains($0) else { return false }
-            included.insert($0)
-            return true
-        }
-    }
-    
     // Returns all vectors feeding this inclusion `path`.
     func vectorsUpstreamOf(_ path: ConceptIDPath) -> [Vector] {
         func _vectorsUpstreamOf(_ path: ConceptIDPath, seen: inout Set<Vector>) -> [Vector] {
@@ -132,12 +140,5 @@ public extension Array where Element == Vector {
             soFar += vectorsDownstreamOf(path, soFarSet: &soFarSet)
         }
         return soFar
-    }
-}
-
-public extension Vector {
-    func isSelfReferential() -> Bool {
-        guard self.operat0r != .feed, !target.isEmpty else { return false }
-        return from == target || operand == target
     }
 }

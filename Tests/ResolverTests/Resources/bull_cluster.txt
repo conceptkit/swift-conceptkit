@@ -1,6 +1,5 @@
-
 Bull
-------------
+-----
 Candle.Close Price > Candle.Open Price
 
 Bull Cluster

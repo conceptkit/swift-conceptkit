@@ -1,4 +1,3 @@
-
 Test Exponent
 --------------
 2 -> Exponent.Base

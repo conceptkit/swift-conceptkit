@@ -195,7 +195,7 @@ public extension Concept {
                 // failed
                 return nil
             }
-            let failedPaths = buildVectorList(self.vectors.calcBuildOrder(), built: &builtSet, virtualVectors: &virtualVectors, externalLinkVectors: externalLinkedCycleVectors, isSkippingSelfReferential: isSkippingSelfReferential)
+            let failedPaths = buildVectorList(self.vectors.calcResolutionOrder(), built: &builtSet, virtualVectors: &virtualVectors, externalLinkVectors: externalLinkedCycleVectors, isSkippingSelfReferential: isSkippingSelfReferential)
             if !failedPaths.isEmpty {
                 if isHardStop {
                     return nil
@@ -336,12 +336,7 @@ fileprivate extension ConceptValuesInterface {
         
         func addVirtualIndexIncrementVector(_ indexPath: ConceptIDPath) {
             let virtualVector = Vector(from: indexPath, target: indexPath, operand: ["1"], operat0r: .add)
-            ///// performance issue
-            let containsAlready = virtualVectors.contains { v in
-                v.toCode() == virtualVector.toCode()
-            }
-            
-            if (!containsAlready) {
+            if (virtualVectors.firstIndex(of: virtualVector) == nil) {
                 virtualVectors.append(virtualVector)
                 built.insert(virtualVector)
                 self[indexPath] = 0
@@ -357,8 +352,6 @@ fileprivate extension ConceptValuesInterface {
                 let allInputs = appendLocalContext(pathInclConcept)
                 // no inputs is an implied first or 0th index
                 let index: Double? = self[indexPath] ?? (allInputs.localValues.isEmpty ? 0.0 : nil)
-                //let roots = Set(innerConcept.vectors.getRootInclusions(external: allInputs.dataSources))
-                //let suppliedRoots = allInputs.filter { roots.contains($0.key) }
                 
                 if let index = index, let preBuilt: ConceptValues = cache.resolvedConceptCache[allInputs.context]?[Int(index)] {
                     ingestLocalValues(preBuilt, additionalLocalContext: pathInclConcept)
@@ -418,6 +411,41 @@ fileprivate extension ConceptValuesInterface {
             return .single(value)
         } else {
             return .multi(returnValues)
+        }
+    }
+}
+
+fileprivate extension Vector.Operator {
+    func calc(_ input: Double, operandValue: Double?) -> Double? {
+        guard let operandValue = operandValue else { return input }
+        
+        switch self {
+        case .divide:
+            return input/operandValue
+        case .divideint:
+            return floor(input/operandValue)
+        case .multiply:
+            return input*operandValue
+        case .multiplyint:
+            return floor(input*operandValue)
+        case .add:
+            return input+operandValue
+        case .diff:
+            return input-operandValue
+        case .feed:
+            return input
+        case .diffabs:
+            return abs(input-operandValue)
+        case .greaterThan:
+            return (input > operandValue) ? operandValue : nil
+        case .lessThan:
+            return (input < operandValue) ? operandValue : nil
+        case .equalTo:
+            return (input == operandValue) ? operandValue : nil
+        case .notEqualTo:
+            return (input != operandValue) ? operandValue : nil
+        case .lessThanOrEqualTo:
+            return (input <= operandValue) ? operandValue : nil
         }
     }
 }

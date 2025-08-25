@@ -54,7 +54,7 @@ class StringToConceptTest: XCTestCase {
         7 -> Seven
         Increment.Out Number -> Should Be Seven
         Six -> Increment.In Number
-        aa  Should Be Seven = Seven
+        Should Be Seven = Seven
         
         Increment
         ++++++++++++++
@@ -86,7 +86,7 @@ class StringToConceptTest: XCTestCase {
         CuRrent Line + 1 -> CurRent Line
         Current Line = Total Lines
         """
-        
+        // TODO
         let caseCorrected = code.split(separator: "\n").map { $0.capitalized }
         
         XCTAssertEqual(caseCorrected[0], "Once Upon A Concept")
@@ -136,7 +136,7 @@ class StringToConceptTest: XCTestCase {
             Top
             ====
             0.01 -> Threshold
-            Above.Image Pixel.Brightness -^ Image Pixel.Brightness -> Difference
+            Above.Image Pixel.Brightness -- Image Pixel.Brightness -> Difference
             """
         var error: String? = nil
         let graph = ConceptGraph.fromCode(code, error: &error)!
@@ -251,12 +251,12 @@ class StringToConceptTest: XCTestCase {
    
     func test_stringToConcepts() {
         let conceptCode = """
-            Rise
-            =====
-            First.Candle.Index + 1 -> Last.Candle.Index
-            Index Diff - 1 -> Size
-            Size > Minimum Count
-            """
+        Rise
+        =====
+        First.Candle.Index + 1 -> Last.Candle.Index
+        Index Diff - 1 -> Size
+        Size > Minimum Count
+        """
         
         var error: String? = nil
         let graph = ConceptGraph.fromCode(conceptCode, error: &error)
