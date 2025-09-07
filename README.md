@@ -12,7 +12,7 @@ Note: It is still in the working preview phase whilst it under-goes further test
 
 Concept Kit is a case-insensitive and space-insensitive language. 
 
-Here is a concept graph containing inter-related concepts. The capitalization of Square is only a helpful convension to differnetiate the Concept from the inclusion of the Concept.
+Here is a concept graph containing inter-related concepts. The capitalization of Square is a convention to help differentiate the Concept from the inclusion of the Concept.
 
 **Textual Representation:**
 
@@ -30,7 +30,7 @@ Square.result = 49
 
 **Visual Representation:**
 
-<img width="647" alt="image" src="https://github.com/user-attachments/assets/2068c55f-871f-4089-92ba-526e34d830b1" />
+<img width="944" height="420" alt="Screenshot 2025-09-07 at 14 30 57" src="https://github.com/user-attachments/assets/9204deba-32c1-4ecf-8480-9cc9746a8e4e" />
 
 Resolving `Test Square`, will trigger the resolving of `Square` with the injected value `7 -> Square.number`.
 
