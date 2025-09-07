@@ -30,7 +30,7 @@ Square.result = 49
 
 **Visual Representation:**
 
-<img width="944" height="420" alt="Screenshot 2025-09-07 at 14 30 57" src="https://github.com/user-attachments/assets/9204deba-32c1-4ecf-8480-9cc9746a8e4e" />
+<img width="472" height="210" alt="Screenshot 2025-09-07 at 14 30 57" src="https://github.com/user-attachments/assets/9204deba-32c1-4ecf-8480-9cc9746a8e4e" />
 
 Resolving `Test Square`, will trigger the resolving of `Square` with the injected value `7 -> Square.number`.
 
