@@ -10,30 +10,31 @@ Note: It is still in the working preview phase whilst it under-goes further test
 
 ## Quick Syntax Guide
 
-Here is a concept graph containing inter-related concepts. 
+Concept Kit is a case-insensitive and space-insensitive language. 
 
-**Visual Representation:**
-
-<img width="647" alt="image" src="https://github.com/user-attachments/assets/2068c55f-871f-4089-92ba-526e34d830b1" />
-
+Here is a concept graph containing inter-related concepts. The capitalization of Square is only a helpful convension to differnetiate the Concept from the inclusion of the Concept.
 
 **Textual Representation:**
 
 ```
+Square
+----------
+number * number -> result
+
 Test Square
 ------
 7 -> Square.number
 Square.result = 49
 
-Square
-----------
-number * number -> result
-
 ```
 
-Resolving `Test Square`, will trigger the resolving of `Square` by it's mention.
+**Visual Representation:**
 
-A concept's inclusions are the elements within a concept. Numbers move between inclusions via the arrows. Vectors (conceptual arrows) indicate directional dependency between inclusions.
+<img width="647" alt="image" src="https://github.com/user-attachments/assets/2068c55f-871f-4089-92ba-526e34d830b1" />
+
+Resolving `Test Square`, will trigger the resolving of `Square` with the injected value `7 -> Square.number`.
+
+A concept's inclusions are the referenced elements within it. Numbers flow between inclusions via the arrows. Vectors (conceptual arrows) indicate directional dependency between inclusions.
 
 Examples:
 
@@ -45,9 +46,9 @@ Additionally, vectors can impose conditional constraints on the concept's resolu
 
 Examples:
 
-`First.Object.Index >= Last.Object.Index`
+`Square.result = 49`
 
-`Next.Object.Index = 1`
+`next.Object.index = 1`
 
 All possible inclusion arithmetic combinations:
 - Add: +
@@ -69,7 +70,7 @@ Other:
 - Or: | e.g. `Apples | Oranges`
 - Exclusion: ! e.g. `!Threshold Is Breached`
 
-Vectors can refer to other concepts in the graph by name, which triggers a resolution of those sub-concepts to access their referenced inclusions. This resolution process is not tied to the order of the Concept Kit code, but rather occurs based on the topological order derived from the dependencies between vectors. 
+Vectors can refer to other concepts in the graph by name, which triggers a resolution of those sub-concepts to access their referenced inclusions. This resolution process is not tied to the order of the Concept Kit code, but rather occurs based on a topological order derived from the dependencies between vectors. 
 
 ### Self-Referential Vectors
 
@@ -103,7 +104,6 @@ A concept's vectors are resolved once, following their dependency chain. However
 The world outside a `ConceptGraph` is constrained to various "frames" of a key/value store. The keys are `ConceptIDPath`s and the values are `Double`s. 
 
 ```
-
 // backing data types
 typealias ConceptID = String
 typealias ConceptIDPath = [ConceptID]
@@ -127,6 +127,37 @@ protocol ConceptValueFrames {
     subscript(_ index: Int) -> ConceptValues { get set }
     var count: Int { get }
     // ...
+}
+```
+Here is a simple Array based ConceptValueFrames impl:
+
+```
+public struct ArrayConceptValueFrames: ConceptValueFrames {
+    private var frames: [ConceptValues]
+    
+    public init(frames: [ConceptValues] = []) {
+        self.frames = frames
+    }
+    
+    public subscript(_ index: Int) -> ConceptValues {
+        get {
+            return frames[index]
+        }
+        set {
+            if index >= frames.count {
+                frames.append(contentsOf: Array(repeating: [:], count: index - frames.count + 1))
+            }
+            frames[index] = newValue
+        }
+    }
+    
+    public var count: Int {
+        frames.count
+    }
+    
+    public func commitEdits() -> Bool {
+        true
+    }
 }
 ```
 
@@ -184,10 +215,10 @@ A key objective throughout the development has been to minimize complexity (line
 Future language environments on the roadmap include:
 
 - Python
+- C
 - JavaScript
 - Java
 - Go
-- C
 - C#
 - Kotlin
 

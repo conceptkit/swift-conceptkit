@@ -2,7 +2,7 @@ import Foundation
 
 public extension ConceptGraph {
     static func fromCode(_ string: String, error: inout String?) -> ConceptGraph? {
-        guard let tokeniser = ConceptStringTokenizer(string: string) else { return nil }
+        guard let tokeniser = ConceptStringTokenizer(string: string.lowercased()) else { return nil }
         let grouper = TokenGrouper(tokeniser, groupTypes: ConceptTokenGroup.allCases)
         
         var graph = ConceptGraph()

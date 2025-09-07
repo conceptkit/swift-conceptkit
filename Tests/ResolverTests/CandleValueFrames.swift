@@ -33,7 +33,7 @@ extension CandleValueFrames: ConceptValueFrames {
     public subscript(index: Int) -> ConceptValues {
         get {
             return array[index].toConceptValues().union([
-                ["Count"] : Double(array.count)
+                ["count"] : Double(array.count)
             ])
         }
         set {
@@ -51,14 +51,14 @@ extension CandleValueFrames: ConceptValueFrames {
 public extension CandleValueFrames.Candle {
     func toConceptValues() -> ConceptValues {
         return [
-            ["Open Time"] : openTime.timeIntervalSince1970,
-            ["Close Time"] : closeTime.timeIntervalSince1970,
-            ["Open Price"] : open,
-            ["Close Price"] : closePrice,
-            ["High Price"] : high,
-            ["Low Price"] : low,
-            ["Number of Trades"] : Double(numberOfTrades),
-            ["Volume"] : volume,
+            ["open time"] : openTime.timeIntervalSince1970,
+            ["close time"] : closeTime.timeIntervalSince1970,
+            ["open price"] : open,
+            ["close price"] : closePrice,
+            ["high price"] : high,
+            ["low price"] : low,
+            ["number of trades"] : Double(numberOfTrades),
+            ["volume"] : volume,
         ]
     }
 }
@@ -66,14 +66,14 @@ public extension CandleValueFrames.Candle {
 public extension ConceptValues {
     func toCandle() -> CandleValueFrames.Candle {
         return CandleValueFrames.Candle(
-            openTime: Date(timeIntervalSince1970: Double(self[["Open Time"]] ?? 0.0)),
-            closeTime: Date(timeIntervalSince1970: Double(self[["Close Time"]] ?? 0.0)),
-            open: Double(self[["Open Price"]] ?? 0.0),
-            closePrice: Double(self[["Close Price"]] ?? 0.0),
-            high: Double(self[["High Price"]] ?? 0.0),
-            low: Double(self[["Low Price"]] ?? 0.0),
-            numberOfTrades: Int(self[["Low Price"]] ?? 0.0),
-            volume: Double(self[["Volume"]] ?? 0.0)
+            openTime: Date(timeIntervalSince1970: Double(self[["open time"]] ?? 0.0)),
+            closeTime: Date(timeIntervalSince1970: Double(self[["close time"]] ?? 0.0)),
+            open: Double(self[["open price"]] ?? 0.0),
+            closePrice: Double(self[["close price"]] ?? 0.0),
+            high: Double(self[["high price"]] ?? 0.0),
+            low: Double(self[["low price"]] ?? 0.0),
+            numberOfTrades: Int(self[["low price"]] ?? 0.0),
+            volume: Double(self[["volume"]] ?? 0.0)
         )
     }
 }

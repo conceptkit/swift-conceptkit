@@ -50,8 +50,8 @@ public class Trace {
 public extension Concept {
     func resolve(values outputCV: ConceptValuesInterface = ConceptValuesInterface(), graph: ConceptGraph, isHardStop: inout Bool, cache: ResolveCache = .init(), trace: inout Trace) -> ConceptValues? {
         var allInputs = outputCV.localValues
-        let specifiedIndex: Int? = allInputs[["Index"]] != nil ? Int(allInputs[["Index"]]!) : nil
-        let requiredIndex = Int(allInputs[["Index"]] ?? Double(0))
+        let specifiedIndex: Int? = allInputs[["index"]] != nil ? Int(allInputs[["index"]]!) : nil
+        let requiredIndex = Int(allInputs[["index"]] ?? Double(0))
         var currentIndex = Int(0)
         var virtualVectors = [Vector]()
         
@@ -133,8 +133,8 @@ public extension Concept {
                 }
             }
             
-            let remaindingVectors = vectorsToProcess.filter { !built.contains($0) }
-            for vector in remaindingVectors {
+            let remainingVectors = vectorsToProcess.filter { !built.contains($0) }
+            for vector in remainingVectors {
                 let failed = buildVector(vector, nextVector: nil)
                 if failed.isEmpty {
                     built.insert(vector)
@@ -150,7 +150,7 @@ public extension Concept {
         func firstCycleVectorUpstream(_ inclusion: ConceptIDPath) -> Vector? {
             func firstVirtualVector<V: Any>(_ path: ConceptIDPath, dict: [ConceptID: V]) -> Vector? {
                 guard let pathEndingInKey = dict.linkedKey(inPath: path) else { return nil }
-                let indexInclusion = pathEndingInKey + ["Index"]
+                let indexInclusion = pathEndingInKey + ["index"]
                 //IMPORTANT! complexity issue
                 return virtualVectors.first(where: { v in
                     v.target == indexInclusion
@@ -249,7 +249,7 @@ fileprivate extension ResolveCache {
     
     func cacheResolutionSuccess(path: ConceptIDPath, index: Int, outputs: ConceptValues, virtualVectors: [Vector]) {
         var conceptResolvedCache = self.resolvedConceptCache[path] ?? .init()
-        conceptResolvedCache[index] = outputs.union([["Index"]: Double(index)])
+        conceptResolvedCache[index] = outputs.union([["index"]: Double(index)])
         self.resolvedConceptCache[path] = conceptResolvedCache
         if !virtualVectors.isEmpty {
             self.resolvedConceptLastIndices[path] = index
@@ -302,10 +302,10 @@ fileprivate extension ConceptValuesInterface {
     }
     
     func copyVal(_ val: ConceptValue, toPath path: ConceptIDPath, graph: ConceptGraph) {
-        if let pathEndingInDataSource = dataSources.linkedKey(inPath: path), path.last != "Index" {
+        if let pathEndingInDataSource = dataSources.linkedKey(inPath: path), path.last != "index" {
             // DATA WRITE
             var dataSource = dataSources[pathEndingInDataSource.last!]!
-            let indexOptional = self[pathEndingInDataSource + ["Index"]]
+            let indexOptional = self[pathEndingInDataSource + ["index"]]
             let index = indexOptional ?? 0
             switch val {
             case .multi(let cv):
@@ -345,9 +345,10 @@ fileprivate extension ConceptValuesInterface {
         
         var soFar: ConceptIDPath = []
         for part in path {
+            // FIXME: duplication? Concept/DAtaSource unification interface?
             if let innerConcept = graph[part] {
                 let pathInclConcept = soFar + [part]
-                let indexPath = pathInclConcept + ["Index"]
+                let indexPath = pathInclConcept + ["index"]
                 
                 let allInputs = appendLocalContext(pathInclConcept)
                 // no inputs is an implied first or 0th index
@@ -371,7 +372,7 @@ fileprivate extension ConceptValuesInterface {
                 break
             } else if let dataSource = dataSources[part] {
                 let pathEndingInDataSource = soFar + [part]
-                let indexPath = pathEndingInDataSource + ["Index"]
+                let indexPath = pathEndingInDataSource + ["index"]
                 if path == indexPath && externalLinkVectors[pathEndingInDataSource] == nil  {
                     guard let value = self[indexPath] else {
                         return nil

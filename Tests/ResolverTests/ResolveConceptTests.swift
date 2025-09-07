@@ -5,23 +5,22 @@ final class ResolveConceptTests: XCTestCase {
 
     func test_SimpleMath() throws {
         let graph = try ConceptGraphLoader.loadGraph(graphFileName: "simple_math", ext: "txt")
-        
-        guard let cv = try resolveConcept(graph, conceptID: "Simple Math") else {
+        guard let cv = try resolveConcept(graph, conceptID: "simple math") else {
             XCTFail("Could not build.")
             return
         }
         
-        guard let result = cv[path("Delta Price")] else {
+        guard let result = cv[path("delta price")] else {
             XCTFail("No main result!")
             return
         }
         
-        guard let highPrice = cv[path("Candle.High Price")] else {
+        guard let highPrice = cv[path("candle.high price")] else {
             XCTFail("No Candle.High Price!")
             return
         }
-        guard let lowPrice = cv[path("Candle.Low Price")] else {
-            XCTFail("No Candle.Low Price!")
+        guard let lowPrice = cv[path("candle.low price")] else {
+            XCTFail("No candle.low price!")
             return
         }
         
@@ -35,65 +34,65 @@ final class ResolveConceptTests: XCTestCase {
     func test_SquareNumber() throws {
         let graph = try ConceptGraphLoader.loadGraph(graphFileName: "test_square", ext: "txt")
         
-        guard let cv = try resolveConcept(graph, conceptID: "Test Square") else {
+        guard let cv = try resolveConcept(graph, conceptID: "test square") else {
             XCTFail("Could not build.")
             return
         }
         
-        guard let result = cv[path("Square.Result")] else {
-            XCTFail("No `Square.Result`!")
+        guard let result = cv[path("square.result")] else {
+            XCTFail("No `square.result`!")
             return
         }
         
-        XCTAssertTrue(result == 49, "`Square.Result` wasn't 49!")
+        XCTAssertTrue(result == 49, "`square.result` wasn't 49!")
     }
     
     func test_ExponentNumber() throws {
         let graph = try ConceptGraphLoader.loadGraph(graphFileName: "test-exponent", ext: "txt")
         
-        guard let cv = try resolveConcept(graph, conceptID: "Test Exponent") else {
+        guard let cv = try resolveConcept(graph, conceptID: "test exponent") else {
             XCTFail("Could not build.")
             return
         }
         
-        guard let result = cv[path("Exponent.Result")] else {
+        guard let result = cv[path("exponent.result")] else {
             XCTFail("No `Exponent.Result`!")
             return
         }
         
-        XCTAssertEqual(result, 32, "`Exponent.Result` wasn't 32!")
+        XCTAssertEqual(result, 32, "`exponent.result` wasn't 32!")
     }
     
     func test_FirstBullCandle() throws {
         let graph = try ConceptGraphLoader.loadGraph(graphFileName: "bull", ext: "txt")
         
-        guard let cv = try resolveConcept(graph, conceptID: "Bull") else {
+        guard let cv = try resolveConcept(graph, conceptID: "bull") else {
             XCTFail("Could not build.")
             return
         }
         
-        guard let indexOf = cv["Candle.Index"] else {
+        guard let indexOf = cv["candle.index"] else {
             XCTFail("No main result!")
             return
         }
         
-        XCTAssertEqual(indexOf, 2, "Unexpected `Candle` index was Bull")
+        XCTAssertEqual(indexOf, 2, "Unexpected `candle` index was Bull")
     }
     
     func test_FourthBullCandle() throws {
         let graph = try ConceptGraphLoader.loadGraph(graphFileName: "fourth-bull", ext: "txt")
         
-        guard let cv = try resolveConcept(graph, conceptID: "Fourth Bull") else {
+        guard let cv = try resolveConcept(graph, conceptID: "fourth bull") else {
             XCTFail("Could not build.")
             return
         }
         
-        guard let bullIndex = cv["Bull.Index"] else {
+        guard let bullIndex = cv["bull.index"] else {
             XCTFail("No main result!")
             return
         }
         
-        guard let candleIndex = cv["Bull.Candle.Index"] else {
+        guard let candleIndex = cv["bull.candle.index"] else {
             XCTFail("No main result!")
             return
         }
@@ -105,12 +104,12 @@ final class ResolveConceptTests: XCTestCase {
     func test_BullCluster() throws {
         let graph = try ConceptGraphLoader.loadGraph(graphFileName: "bull_cluster", ext: "txt")
         
-        guard let cv = try resolveConcept(graph, conceptID: "Bull Cluster") else {
+        guard let cv = try resolveConcept(graph, conceptID: "bull cluster") else {
             XCTFail("Could not build.")
             return
         }
         
-        guard let indexOf = cv[path("After.Bull.Candle.Index")] else {
+        guard let indexOf = cv[path("after.bull.candle.index")] else {
             XCTFail("No main result!")
             return
         }
@@ -121,17 +120,17 @@ final class ResolveConceptTests: XCTestCase {
     func test_ThirdBullCluster() throws {
         let graph = try ConceptGraphLoader.loadGraph(graphFileName: "third-bull-cluster", ext: "txt")
         
-        guard let cv = try resolveConcept(graph, conceptID: "Third Bull Cluster") else {
+        guard let cv = try resolveConcept(graph, conceptID: "third bull cluster") else {
             XCTFail("Could not build.")
             return
         }
         
-        guard let bullClusterIndex = cv["Bull Cluster.Index"] else {
+        guard let bullClusterIndex = cv["bull cluster.index"] else {
             XCTFail("No main result!")
             return
         }
         
-        guard let candleIndex = cv["Bull Cluster.First.Bull.Candle.Index"] else {
+        guard let candleIndex = cv["bull cluster.first.bull.candle.index"] else {
             XCTFail("No main result!")
             return
         }
@@ -143,17 +142,17 @@ final class ResolveConceptTests: XCTestCase {
     func test_Rise() throws {
         let graph = try ConceptGraphLoader.loadGraph(graphFileName: "rise_trend", ext: "txt")
         
-        guard let cv = try resolveConcept(graph, conceptID: "Medium Rise") else {
+        guard let cv = try resolveConcept(graph, conceptID: "medium rise") else {
             XCTFail("Could not build.")
             return
         }
         
-        guard let firstCandleIndex = cv[path("Bull Cluster.First.Bull.Candle.Index")] else {
-            XCTFail("No `Bull Cluster` index!")
+        guard let firstCandleIndex = cv[path("bull cluster.first.bull.candle.index")] else {
+            XCTFail("No `bull cluster` index!")
             return
         }
         
-        XCTAssertEqual(firstCandleIndex, 6, "`Bull Cluster.First.Candle.Index` wasn't right!")
+        XCTAssertEqual(firstCandleIndex, 6, "`bull cluster.first.candle.index` wasn't right!")
     }
     
     // MARK: - convenience methods
@@ -164,11 +163,11 @@ final class ResolveConceptTests: XCTestCase {
     
     private func resolveConcept(_ graph: ConceptGraph, conceptID: ConceptID, errorString: ((ConceptValues) -> String?)? = nil) throws -> ConceptValues? {
         guard let concept = graph[conceptID] else {
-            throw "Concept not found in graph"
+            throw "Concept `\(conceptID)` not found in graph"
         }
         
         let file = Bundle.module.path(forResource: "twoMonths", ofType: "json")!
-        let dataSources: [ConceptID: ConceptValueFrames] = ["Candle": CandleValueFrames(file: file)!]
+        let dataSources: [ConceptID: ConceptValueFrames] = ["candle": CandleValueFrames(file: file)!]
         
         let conceptValuesInterface = ConceptValuesInterface(dataSources: dataSources)
         var isHardStop = false

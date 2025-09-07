@@ -9,8 +9,7 @@ public extension Vector {
 
 public extension Array where Element == Vector {
     
-    // Calculates the reverse topological order based on the dependancies within.
-    // It's reverse topological (leaf-first), with dependencies resolved recursively by `getActiveValue`.
+    // Calculates reverse topological (leaf-first), with dependencies resolved recursively by `getActiveValue`.
     func calcResolutionOrder() -> [Vector] {
         let leaves = self.getLeafInclusions()
         var seen = Set<Vector>()
@@ -90,7 +89,7 @@ public extension Array where Element == Vector {
             if let link = external.linkedKey(inPath: $0) {
                 if !seenLinks.contains(link) {
                     seenLinks.insert(link)
-                    let virtual = link + ["Index"]
+                    let virtual = link + ["index"]
                     included.insert(virtual)
                     return virtual
                 } else {

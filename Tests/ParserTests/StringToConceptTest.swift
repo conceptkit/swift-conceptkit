@@ -22,27 +22,21 @@ class StringToConceptTest: XCTestCase {
         Should Be Seven = Seven
         """
         
-        var error: String? = nil
-        let graph = ConceptGraph.fromCode(code, error: &error)!
-        guard let deepIncrement = graph["Deep Increment"] else {
-            XCTFail("Couldn't find Deep Increment")
-            return
-        }
-        XCTAssertEqual(graph.count, 1)
+        guard let deepIncrement = AssertConceptExists(code, concept: "deep increment") else { return }
         XCTAssertEqual(deepIncrement.vectors.count, 7)
-        let cools = deepIncrement.vectors.filter { $0.from.first == "Cool" }
+        let cools = deepIncrement.vectors.filter { $0.from.first == "cool" }
         guard cools.count == 2 else {
             XCTFail("Missing special assign character vectors")
             return
         }
         XCTAssertTrue(cools.contains(where: {
             $0.target.first == "7"
-        }), "Missing Cool → 7 vector")
+        }), "missing cool → 7 vector")
         XCTAssertTrue(cools.contains(where: {
-            $0.target.first == "Man"
-        }), "Missing Cool → Man vector")
+            $0.target.first == "man"
+        }), "Missing cool → man vector")
         XCTAssertTrue(deepIncrement.vectors.contains(where: { vector in
-            vector.from.toCode() == "Should Be Seven" && vector.operand.toCode() == "Seven" && vector.operat0r == .equalTo && vector.target == []
+            vector.from.toCode() == "should be seven" && vector.operand.toCode() == "seven" && vector.operat0r == .equalTo && vector.target == []
         }), "Missing condition vector");
     }
     
@@ -64,11 +58,11 @@ class StringToConceptTest: XCTestCase {
         
         var error: String? = nil
         let graph = ConceptGraph.fromCode(code, error: &error)!
-        guard let deepIncrement = graph["Deep Increment"] else {
+        guard let deepIncrement = graph["deep increment"] else {
             XCTFail("Deep Increment not found")
             return
         }
-        let increment = graph["Increment"]!
+        let increment = graph["increment"]!
         XCTAssertEqual(graph.count, 2)
         XCTAssertEqual(deepIncrement.vectors.count, 5)
         XCTAssertEqual(increment.vectors.count, 2)
@@ -86,12 +80,12 @@ class StringToConceptTest: XCTestCase {
         CuRrent Line + 1 -> CurRent Line
         Current Line = Total Lines
         """
-        // TODO
-        let caseCorrected = code.split(separator: "\n").map { $0.capitalized }
         
-        XCTAssertEqual(caseCorrected[0], "Once Upon A Concept")
-        XCTAssertEqual(caseCorrected[1], "---------------")
-        XCTAssertEqual(caseCorrected[2], "0 -> Image Pixel.Index")
+        guard let concept = AssertConceptExists(code, concept: "once upon a concept") else { return }
+        
+        AssertVectorExists(concept, from: "0", target: "image pixel.index")
+        AssertVectorExists(concept, from: "image pixel.index", target: "draw v line.image pixel.index", operand: "2")
+        AssertVectorExists(concept, from: "current line", operand: "total lines")
     }
     
     func test_exactVectorOrder() throws {
@@ -118,16 +112,16 @@ class StringToConceptTest: XCTestCase {
         
         var error: String? = nil
         let graph = ConceptGraph.fromCode(code, error: &error)!
-        guard let drawHLine = graph["Draw H Line"] else {
+        guard let drawHLine = graph["draw h line"] else {
             XCTFail("coudn't find Draw H Line")
             return
         }
-        XCTAssertEqual(drawHLine.vectors[0].toCode(), "0 → At Index")
-        XCTAssertEqual(drawHLine.vectors[1].toCode(), "7 → Width")
-        XCTAssertEqual(drawHLine.vectors[2].toCode(), "0 → Image Pixel.Index")
-        XCTAssertEqual(drawHLine.vectors[3].toCode(), "0.11 → Color.Green")
-        XCTAssertEqual(drawHLine.vectors[4].toCode(), "0.73 → Color.Red")
-        XCTAssertEqual(drawHLine.vectors[5].toCode(), "0.91 → Color.Blue")
+        XCTAssertEqual(drawHLine.vectors[0].toCode(), "0 → at index")
+        XCTAssertEqual(drawHLine.vectors[1].toCode(), "7 → width")
+        XCTAssertEqual(drawHLine.vectors[2].toCode(), "0 → image pixel.index")
+        XCTAssertEqual(drawHLine.vectors[3].toCode(), "0.11 → color.green")
+        XCTAssertEqual(drawHLine.vectors[4].toCode(), "0.73 → color.red")
+        XCTAssertEqual(drawHLine.vectors[5].toCode(), "0.91 → color.blue")
         XCTAssertEqual(drawHLine.vectors.count, 11)
     }
     
@@ -140,7 +134,7 @@ class StringToConceptTest: XCTestCase {
             """
         var error: String? = nil
         let graph = ConceptGraph.fromCode(code, error: &error)!
-        guard let rise = graph["Top"] else {
+        guard let rise = graph["top"] else {
             XCTFail("coudn't find Top")
             return
         }
@@ -157,7 +151,7 @@ class StringToConceptTest: XCTestCase {
             """
         var error: String? = nil
         let graph = ConceptGraph.fromCode(code, error: &error)!
-        guard let rise = graph["Top"] else {
+        guard let rise = graph["top"] else {
             XCTFail("Top missing")
             return
         }
@@ -174,7 +168,7 @@ class StringToConceptTest: XCTestCase {
             """
         var error: String? = nil
         let graph = ConceptGraph.fromCode(code, error: &error)!
-        guard let rise = graph["Top"]  else {
+        guard let rise = graph["top"]  else {
             XCTFail("coudn't find Top")
             return
         }
@@ -192,7 +186,7 @@ class StringToConceptTest: XCTestCase {
             """
         var error: String? = nil
         let graph = ConceptGraph.fromCode(code, error: &error)!
-        guard let rise = graph["Top"] else {
+        guard let rise = graph["top"] else {
             XCTFail("coudn't find Top")
             return
         }
@@ -201,7 +195,7 @@ class StringToConceptTest: XCTestCase {
         
         let negativeVector = rise.vectors.first { vector in
             guard let target = vector.target.first else { return false }
-            return target.isExclusion() && target == "!Even Worse"
+            return target.isExclusion() && target == "!even worse"
         }
         
         guard negativeVector != nil else {
@@ -222,7 +216,7 @@ class StringToConceptTest: XCTestCase {
         
         var error: String? = nil
         let graph = ConceptGraph.fromCode(code, error: &error)!
-        guard let rise = graph["Rise"] else {
+        guard let rise = graph["rise"] else {
             XCTFail("Coudn't find Rise")
             return
         }
@@ -239,13 +233,13 @@ class StringToConceptTest: XCTestCase {
         
         var error: String? = nil
         let graph = ConceptGraph.fromCode(code, error: &error)!
-        guard let con = graph["Convolution"] else {
+        guard let con = graph["convolution"] else {
             XCTFail("coudn't find Convolution")
             return
         }
         XCTAssertEqual(graph.count, 1)
         XCTAssertEqual(con.vectors.count, 1)
-        XCTAssertEqual(con.vectors.first?.from.toCode(), "First.Candle.Index")
+        XCTAssertEqual(con.vectors.first?.from.toCode(), "first.candle.index")
         XCTAssertEqual(con.vectors.first?.operand.toCode(), "1")
     }
    
@@ -262,26 +256,56 @@ class StringToConceptTest: XCTestCase {
         let graph = ConceptGraph.fromCode(conceptCode, error: &error)
         
         XCTAssertEqual(graph?.count, 1)
-        XCTAssertEqual(graph?["Rise"]?.vectors.count, 3)
+        XCTAssertEqual(graph?["rise"]?.vectors.count, 3)
         
-        XCTAssertEqual(graph?["Rise"]?.vectors[2].from, ["Size"])
-        XCTAssertEqual(graph?["Rise"]?.vectors[2].operand, ["Minimum Count"])
-        XCTAssertEqual(graph?["Rise"]?.vectors[2].operat0r, .greaterThan)
+        XCTAssertEqual(graph?["rise"]?.vectors[2].from, ["size"])
+        XCTAssertEqual(graph?["rise"]?.vectors[2].operand, ["minimum count"])
+        XCTAssertEqual(graph?["rise"]?.vectors[2].operat0r, .greaterThan)
         
-        guard let vectorsSorted = graph?["Rise"]?.vectors.sorted(by: { v1, v2 in
+        guard let vectorsSorted = graph?["rise"]?.vectors.sorted(by: { v1, v2 in
             return v1.toCode() < v2.toCode()
         }) else {
             XCTFail("No vectors!")
             return
         }
-        XCTAssertEqual(vectorsSorted[0].from.toCode(), "First.Candle.Index")
+        XCTAssertEqual(vectorsSorted[0].from.toCode(), "first.candle.index")
         XCTAssertEqual(vectorsSorted[0].operand.toCode(), "1")
-        XCTAssertEqual(vectorsSorted[0].target.toCode(), "Last.Candle.Index")
+        XCTAssertEqual(vectorsSorted[0].target.toCode(), "last.candle.index")
         XCTAssertEqual(vectorsSorted[0].operat0r, .add)
-        XCTAssertEqual(vectorsSorted[1].from.toCode(), "Index Diff")
+        XCTAssertEqual(vectorsSorted[1].from.toCode(), "index diff")
         XCTAssertEqual(vectorsSorted[1].operand.toCode(), "1")
-        XCTAssertEqual(vectorsSorted[1].target.toCode(), "Size")
+        XCTAssertEqual(vectorsSorted[1].target.toCode(), "size")
         XCTAssertEqual(vectorsSorted[1].operat0r, .diff)
-        XCTAssertEqual(graph?["Rise"]?.vectors[2].operat0r, .greaterThan)
+        XCTAssertEqual(graph?["rise"]?.vectors[2].operat0r, .greaterThan)
+    }
+    
+    // MARK: -- helpers
+    
+    func AssertConceptExists(_ code: String, concept: ConceptID) -> Concept? {
+        var error: String? = nil
+        let graph = ConceptGraph.fromCode(code, error: &error)!
+        guard let concept = graph[concept] else {
+            XCTFail("`\(concept)` not found")
+            return nil
+        }
+        return concept
+    }
+    
+    func AssertVectorExists(_ concept: Concept, from: String="", target: String="", operand: String="") {
+        guard concept.vectors.contains(where: {
+            var matched = !from.isEmpty ? (from == $0.from.toCode()) : true
+            if !matched {
+                return false
+            }
+            matched = !target.isEmpty ? (target == $0.target.toCode()) : true
+            if !matched {
+                return false
+            }
+            matched = !operand.isEmpty ? (operand == $0.operand.toCode()) : true
+            return true
+        }) else {
+            XCTFail("Concept `\(concept.id)` did not contain specified")
+            return
+        }
     }
 }

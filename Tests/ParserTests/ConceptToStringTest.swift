@@ -43,36 +43,36 @@ class ConceptToStringTest: XCTestCase {
         let code = knowledge.toCode()
         let lines = code.split(separator: "\n")
         
-        XCTAssertEqual(lines[0], "Rise")
+        XCTAssertEqual(lines[0], "rise")
         XCTAssertEqual(lines[1], "--------")
-        XCTAssertEqual(lines[2], "4 → Minimum Count")
-        XCTAssertEqual(lines[3], "0 → First.Candle.Index")
-        XCTAssertEqual(lines[4], "First.Candle.Index + 1 → First.Candle.Index")
-        XCTAssertEqual(lines[5], "Index Diff + 1 → Size")
-        XCTAssertEqual(lines[6], "Size > Minimum Count")
+        XCTAssertEqual(lines[2], "4 → minimum count")
+        XCTAssertEqual(lines[3], "0 → first.candle.index")
+        XCTAssertEqual(lines[4], "first.candle.index + 1 → first.candle.index")
+        XCTAssertEqual(lines[5], "index diff + 1 → size")
+        XCTAssertEqual(lines[6], "size > minimum count")
     }
     
     private func makeConcepts() -> ConceptGraph {
         var graph = ConceptGraph()
-        graph = graph.modify("Rise")
-            .addValueFeed(4, forInclusion: ["Minimum Count"])
-            .addValueFeed(0, forInclusion: ["First", "Candle"] + DataSources.kIndex)
+        graph = graph.modify("rise")
+            .addValueFeed(4, forInclusion: ["minimum count"])
+            .addValueFeed(0, forInclusion: ["first", "candle"] + DataSources.kIndex)
             .addVector(
                 .init(
-                    from: ["First", "Candle"] + DataSources.kIndex,
-                    target: ["First", "Candle"] + DataSources.kIndex,
+                    from: ["first", "candle"] + DataSources.kIndex,
+                    target: ["first", "candle"] + DataSources.kIndex,
                     operand: ["1"],
                     operat0r: .add))
             .addVector(
                 .init(
-                    from: ["Index Diff"],
-                    target: ["Size"],
+                    from: ["index diff"],
+                    target: ["size"],
                     operand:["1"],
                     operat0r: .add))
             .addVector(
                 .init(
-                    from: ["Size"],
-                    target: ["Minimum Count"],
+                    from: ["size"],
+                    target: ["minimum count"],
                     operand: [],
                     operat0r: .greaterThan
                 )
@@ -86,6 +86,6 @@ fileprivate typealias DataSources = [ConceptIDPath: ConceptValueFrames]
 fileprivate extension DataSources {
     // the magical index key
     static var kIndex: ConceptIDPath {
-        ["Index"]
+        ["index"]
     }
 }
